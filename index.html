@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+    <title>药安全 · 查药助手</title>
+    <style>
+        /* ===== 全局重置 & 适老化基础 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: #f5f7fa;
+            color: #1a1a1a;
+            font-size: 20px;
+            line-height: 1.6;
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .app-container {
+            max-width: 480px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 24px 20px 32px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ===== 头部 ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0a7e3d;
+            letter-spacing: 2px;
+        }
+        .header p {
+            font-size: 18px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* ===== 输入区域 ===== */
+        .input-section {
+            background: #f0f4f9;
+            border-radius: 20px;
+            padding: 20px 16px;
+            margin-bottom: 20px;
+        }
+
+        .input-section label {
+            display: block;
+            font-weight: 600;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .input-row input {
+            flex: 1;
+            min-width: 180px;
+            padding: 16px 18px;
+            font-size: 22px;
+            border: 2px solid #ccd7e6;
+            border-radius: 16px;
+            background: #fff;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .input-row input:focus {
+            border-color: #0a7e3d;
+        }
+
+        .input-row button {
+            padding: 16px 28px;
+            font-size: 24px;
+            font-weight: 700;
+            background: #0a7e3d;
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .input-row button:hover {
+            background: #086a33;
+        }
+        .input-row button:active {
+            transform: scale(0.96);
+        }
+
+        /* ===== 快捷操作按钮（扫码/拍照） ===== */
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .quick-actions button {
+            flex: 1;
+            min-width: 120px;
+            padding: 14px 0;
+            font-size: 22px;
+            font-weight: 600;
+            border: 2px solid #0a7e3d;
+            background: #e8f5ee;
+            color: #0a7e3d;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .quick-actions button:hover {
+            background: #d0ebe0;
+        }
+        .quick-actions button:active {
+            transform: scale(0.96);
+        }
+
+        /* ===== 结果卡片 ===== */
+        .result-area {
+            margin-top: 20px;
+            padding: 20px 16px;
+            border-radius: 20px;
+            background: #f8f9fc;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 2px dashed #d0d7e3;
+            transition: all 0.3s;
+        }
+
+        .result-area .placeholder {
+            color: #999;
+            font-size: 20px;
+        }
+
+        .result-area.status-green {
+            border-color: #0a7e3d;
+            background: #e6f5ed;
+        }
+        .result-area.status-yellow {
+            border-color: #b68b00;
+            background: #fef7e0;
+        }
+        .result-area.status-red {
+            border-color: #b22222;
+            background: #fde8e8;
+        }
+
+        .result-area .result-icon {
+            font-size: 56px;
+            line-height: 1.2;
+        }
+        .result-area .result-title {
+            font-size: 30px;
+            font-weight: 700;
+            margin: 8px 0 4px;
+        }
+        .result-area .result-desc {
+            font-size: 20px;
+            color: #333;
+            max-width: 90%;
+        }
+        .result-area .result-detail {
+            font-size: 18px;
+            color: #555;
+            margin-top: 8px;
+            background: rgba(255,255,255,0.6);
+            padding: 10px 16px;
+            border-radius: 12px;
+            width: 100%;
+        }
+
+        /* ===== 朗读按钮（新增） ===== */
+        .result-actions {
+            margin-top: 14px;
+            display: none;  /* 默认隐藏，有结果时显示 */
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .result-actions.show {
+            display: flex;
+        }
+
+        .speak-btn {
+            padding: 14px 32px;
+            font-size: 24px;
+            font-weight: 600;
+            background: #2c6b9e;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px rgba(44,107,158,0.3);
+        }
+        .speak-btn:hover {
+            background: #1f5480;
+        }
+        .speak-btn:active {
+            transform: scale(0.96);
+        }
+        .speak-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ===== 免责声明 ===== */
+        .disclaimer {
+            margin-top: 16px;
+            font-size: 14px;
+            color: #999;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 16px;
+        }
+        .disclaimer a {
+            color: #0a7e3d;
+            text-decoration: underline;
+        }
+
+        /* ===== 小屏适配 ===== */
+        @media (max-width: 420px) {
+            body { font-size: 18px; padding: 10px; }
+            .app-container { padding: 16px 12px; }
+            .header h1 { font-size: 30px; }
+            .input-row input { font-size: 20px; padding: 14px; }
+            .input-row button { font-size: 20px; padding: 14px 20px; }
+            .quick-actions button { font-size: 18px; }
+            .speak-btn { font-size: 20px; padding: 12px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- 头部 -->
+    <div class="header">
+        <h1>💊 药安全</h1>
+        <p>输入批准文号 · 快速核对</p>
+    </div>
+
+    <!-- 输入区 -->
+    <div class="input-section">
+        <label for="drugInput">🔍 输入文号</label>
+        <div class="input-row">
+            <input type="text" id="drugInput" placeholder="例如：国药准字H10983027" />
+            <button id="checkBtn">查 验</button>
+        </div>
+
+        <div class="quick-actions">
+            <button id="scanBtn">📷 扫条形码</button>
+            <button id="photoBtn">🧴 拍药盒</button>
+        </div>
+        <p style="font-size:16px; color:#888; margin-top:10px;">
+            ⚡ 快捷功能为演示占位，后续可对接真实扫码/OCR
+        </p>
+    </div>
+
+    <!-- 结果展示 -->
+    <div class="result-area" id="resultArea">
+        <span class="placeholder">👆 输入文号后点击“查验”</span>
+    </div>
+
+    <!-- 朗读按钮（新增） -->
+    <div class="result-actions" id="resultActions">
+        <button class="speak-btn" id="speakBtn">🔊 朗读结果</button>
+    </div>
+
+    <!-- 免责声明 -->
+    <div class="disclaimer">
+        ⚠️ 结果仅供参考，最终以<a href="https://www.nmpa.gov.cn/" target="_blank">国家药监局官网</a>查询为准
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    //  核心逻辑 —— 真假药判断引擎 + 语音朗读
+    // ============================================================
+
+    (function() {
+        const inputEl = document.getElementById('drugInput');
+        const checkBtn = document.getElementById('checkBtn');
+        const resultArea = document.getElementById('resultArea');
+        const resultActions = document.getElementById('resultActions');
+        const speakBtn = document.getElementById('speakBtn');
+        const scanBtn = document.getElementById('scanBtn');
+        const photoBtn = document.getElementById('photoBtn');
+
+        // ---------- 用于存储当前结果（供朗读使用） ----------
+        let currentResult = null;
+
+        // ---------- 规则引擎 ----------
+        function analyzeDrug(code) {
+            const raw = code.trim().toUpperCase();
+            if (!raw) {
+                return {
+                    status: 'none',
+                    icon: '✏️',
+                    title: '请输入文号',
+                    desc: '在输入框中粘贴或输入批准文号',
+                    detail: ''
+                };
+            }
+
+            const drugPattern = /^国药准字[HZSJ]\d{8}$/;
+            if (drugPattern.test(raw)) {
+                const letter = raw.charAt(4);
+                const typeMap = { 'H': '化学药', 'Z': '中成药', 'S': '生物药', 'J': '进口分包装' };
+                const type = typeMap[letter] || '药品';
+                return {
+                    status: 'green',
+                    icon: '✅',
+                    title: '格式符合药品标准',
+                    desc: `文号：${raw}（${type}）`,
+                    detail: '✔ 格式正确，建议前往国家药监局官网核对备案信息'
+                };
+            }
+
+            const healthPattern = /^(国食健字[GJ]\d+|食健备[GJ]\d+)$/;
+            if (healthPattern.test(raw)) {
+                return {
+                    status: 'yellow',
+                    icon: '🟡',
+                    title: '这是保健食品（非药品）',
+                    desc: `文号：${raw}`,
+                    detail: '⚠️ 保健食品不能替代药品，不具备治疗疾病的功能'
+                };
+            }
+
+            const foodPattern = /^SC\d{14}$/;
+            if (foodPattern.test(raw)) {
+                return {
+                    status: 'yellow',
+                    icon: '🟡',
+                    title: '这是普通食品',
+                    desc: `生产许可证号：${raw}`,
+                    detail: '⚠️ 食品不具备任何治疗功效，宣传“治病”即为违法'
+                };
+            }
+
+            const fakeKeywords = ['根治', '降压', '降糖', '风湿', '特效', '祖传', '偏方', '秘方', '神药'];
+            let foundKeyword = null;
+            for (let kw of fakeKeywords) {
+                if (raw.includes(kw)) {
+                    foundKeyword = kw;
+                    break;
+                }
+            }
+            if (foundKeyword) {
+                return {
+                    status: 'red',
+                    icon: '🚫',
+                    title: '⚠️ 疑似虚假宣传',
+                    desc: `含有违规用语：“${foundKeyword}”`,
+                    detail: '❌ 正规药品/食品包装上禁止使用此类夸大宣传词汇'
+                };
+            }
+
+            if (raw.includes('国药准字')) {
+                return {
+                    status: 'red',
+                    icon: '🚫',
+                    title: '文号格式错误',
+                    desc: `“${raw}” 不符合国药准字规范`,
+                    detail: '❌ 正规格式：国药准字 + H/Z/S/J + 8位数字'
+                };
+            }
+
+            if (raw.includes('国食健字') || raw.includes('食健备')) {
+                return {
+                    status: 'red',
+                    icon: '🚫',
+                    title: '保健品文号格式错误',
+                    desc: `“${raw}” 格式不正确`,
+                    detail: '❌ 国产：国食健字G+数字 / 食健备G+数字'
+                };
+            }
+
+            return {
+                status: 'red',
+                icon: '❓',
+                title: '无法识别该文号',
+                desc: `输入内容：${raw}`,
+                detail: '❌ 既不符合药品、保健品，也不符合食品标准编号，请高度警惕'
+            };
+        }
+
+        // ---------- 生成朗读文本 ----------
+        function getSpeakText(result) {
+            if (!result || result.status === 'none') {
+                return '请先输入文号并点击查验';
+            }
+            const statusMap = { 'green': '安全', 'yellow': '请注意', 'red': '危险' };
+            const statusWord = statusMap[result.status] || '未知';
+            // 去掉一些特殊符号，让语音更自然
+            const cleanTitle = result.title.replace(/[⚠️✅🚫❓🟡]/g, '').trim();
+            const cleanDesc = result.desc.replace(/[：:✔️⚠️❌]/g, '').trim();
+            const cleanDetail = result.detail.replace(/[：:✔️⚠️❌]/g, '').trim();
+            return `${statusWord}，${cleanTitle}。${cleanDesc}。${cleanDetail}`;
+        }
+
+        // ---------- 语音朗读 ----------
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) {
+                alert('当前浏览器不支持语音朗读，请使用Chrome或Safari');
+                return;
+            }
+
+            // 取消当前正在播放的语音
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-CN';
+            utterance.rate = 0.85;      // 稍慢，适合老年人
+            utterance.pitch = 1.0;
+            utterance.volume = 1;
+
+            // 尝试选择中文语音（如果有）
+            const voices = window.speechSynthesis.getVoices();
+            const zhVoice = voices.find(v => v.lang.startsWith('zh'));
+            if (zhVoice) {
+                utterance.voice = zhVoice;
+            }
+
+            // 朗读状态反馈：禁用按钮，防止重复点击
+            speakBtn.disabled = true;
+            speakBtn.textContent = '🔊 朗读中...';
+
+            utterance.onend = function() {
+                speakBtn.disabled = false;
+                speakBtn.textContent = '🔊 朗读结果';
+            };
+            utterance.onerror = function() {
+                speakBtn.disabled = false;
+                speakBtn.textContent = '🔊 朗读结果';
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // ---------- 渲染结果 ----------
+        function renderResult(result) {
+            currentResult = result;
+            resultArea.className = 'result-area';
+            resultArea.innerHTML = '';
+
+            if (result.status === 'none') {
+                resultArea.innerHTML = `<span class="placeholder">👆 ${result.title}</span>`;
+                resultActions.classList.remove('show');
+                return;
+            }
+
+            resultArea.classList.add(`status-${result.status}`);
+            const html = `
+                <div class="result-icon">${result.icon}</div>
+                <div class="result-title">${result.title}</div>
+                <div class="result-desc">${result.desc}</div>
+                <div class="result-detail">${result.detail}</div>
+            `;
+            resultArea.innerHTML = html;
+
+            // 显示朗读按钮
+            resultActions.classList.add('show');
+        }
+
+        // ---------- 主检查函数 ----------
+        function handleCheck() {
+            const rawText = inputEl.value;
+            const result = analyzeDrug(rawText);
+            renderResult(result);
+            // 注意：不自动朗读，让用户点击按钮触发
+        }
+
+        // ---------- 朗读按钮点击事件 ----------
+        speakBtn.addEventListener('click', function() {
+            if (!currentResult || currentResult.status === 'none') {
+                alert('请先查验文号，再点击朗读');
+                return;
+            }
+            const text = getSpeakText(currentResult);
+            speakText(text);
+        });
+
+        // ---------- 绑定其他事件 ----------
+        checkBtn.addEventListener('click', handleCheck);
+
+        inputEl.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleCheck();
+            }
+        });
+
+        scanBtn.addEventListener('click', function() {
+            alert('📷 扫码功能开发中……\n后续可调用摄像头扫描条形码');
+        });
+        photoBtn.addEventListener('click', function() {
+            alert('🧴 拍照识别功能开发中……\n后续可对接OCR识别药盒文字');
+        });
+
+        // 预加载语音列表（部分浏览器需要）
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = function() {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        inputEl.focus();
+        console.log('💊 药安全 Demo 已加载（含语音朗读）');
+    })();
+</script>
+
+</body>
+</html>
