@@ -389,86 +389,6 @@
             text-decoration: underline;
         }
 
-        /* ===== 相机取景器（全屏覆盖） ===== */
-        .camera-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #000;
-            z-index: 1100;
-            flex-direction: column;
-        }
-        .camera-overlay.show {
-            display: flex;
-        }
-
-        .camera-overlay .camera-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 16px;
-            color: #fff;
-            z-index: 2;
-            position: absolute;
-            top: 0; left: 0; right: 0;
-        }
-        .camera-overlay .camera-header button {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: #fff;
-            font-size: 18px;
-            padding: 8px 18px;
-            border-radius: 20px;
-            cursor: pointer;
-            backdrop-filter: blur(4px);
-        }
-        .camera-overlay .camera-header button:active {
-            transform: scale(0.95);
-        }
-        .camera-overlay .camera-header .cam-title {
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .camera-overlay video {
-            flex: 1;
-            width: 100%;
-            object-fit: cover;
-            background: #000;
-        }
-
-        .camera-overlay .camera-footer {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 24px 16px 40px;
-            gap: 40px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.6));
-        }
-        .camera-overlay .camera-footer .capture-btn {
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
-            border: 4px solid #fff;
-            background: rgba(255,255,255,0.3);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.15s;
-        }
-        .camera-overlay .camera-footer .capture-btn:active {
-            transform: scale(0.9);
-        }
-        .camera-overlay .camera-footer .capture-btn .inner {
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            background: #fff;
-        }
-
         /* ===== 拍照预览（全屏覆盖） ===== */
         .preview-overlay {
             display: none;
@@ -636,9 +556,6 @@
             .input-row button { font-size: 20px; padding: 14px 20px; }
             .quick-actions button { font-size: 18px; }
             .speak-btn { font-size: 20px; padding: 12px 24px; }
-            .camera-overlay .camera-footer { padding: 16px 12px 32px; gap: 24px; }
-            .camera-overlay .camera-footer .capture-btn { width: 64px; height: 64px; }
-            .camera-overlay .camera-footer .capture-btn .inner { width: 48px; height: 48px; }
             .modal-box { padding: 20px 16px; }
             .modal-box h2 { font-size: 22px; }
         }
@@ -704,23 +621,6 @@
     </div>
 </div>
 
-<!-- ===== 相机取景器 ===== -->
-<div class="camera-overlay" id="cameraOverlay">
-    <div class="camera-header">
-        <button id="camCancelBtn">✕ 取消</button>
-        <span class="cam-title">📸 对准药盒</span>
-        <button id="camSwitchBtn">🔄 翻转</button>
-    </div>
-    <video id="videoPreview" playsinline autoplay></video>
-    <div class="camera-footer">
-        <div></div>
-        <div class="capture-btn" id="captureBtn">
-            <div class="inner"></div>
-        </div>
-        <div></div>
-    </div>
-</div>
-
 <!-- ===== 拍照预览 ===== -->
 <div class="preview-overlay" id="previewOverlay">
     <div class="preview-img-wrap">
@@ -769,13 +669,6 @@
         const closeSettingsBtn = document.getElementById('closeSettingsBtn');
         const clearApiKeyBtn  = document.getElementById('clearApiKeyBtn');
 
-        // 相机
-        const cameraOverlay   = document.getElementById('cameraOverlay');
-        const videoPreview    = document.getElementById('videoPreview');
-        const camCancelBtn    = document.getElementById('camCancelBtn');
-        const camSwitchBtn    = document.getElementById('camSwitchBtn');
-        const captureBtn      = document.getElementById('captureBtn');
-
         // 预览
         const previewOverlay  = document.getElementById('previewOverlay');
         const previewImg      = document.getElementById('previewImg');
@@ -794,8 +687,6 @@
         // ---------- 状态 ----------
         let currentResult     = null;      // 当前分析结果（供朗读用）
         let capturedImageData = null;      // 当前捕获的图片数据 (dataURL)
-        let currentStream     = null;      // 摄像头流
-        let isFrontCamera     = false;     // 前后摄像头切换
         let isAnalyzing       = false;     // 防止重复提交
 
         // =============================================================
@@ -835,64 +726,6 @@
 
         function getApiKey() {
             return localStorage.getItem('deepseek_api_key') || '';
-        }
-
-        // =============================================================
-        //  相机管理
-        // =============================================================
-        function stopCamera() {
-            if (currentStream) {
-                currentStream.getTracks().forEach(function(t) { t.stop(); });
-                currentStream = null;
-            }
-        }
-
-        function startCamera(facingMode) {
-            stopCamera();
-            var constraints = {
-                video: {
-                    facingMode: facingMode || 'environment',
-                    width: { ideal: 1920 },
-                    height: { ideal: 1080 }
-                },
-                audio: false
-            };
-            return navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-                currentStream = stream;
-                videoPreview.srcObject = stream;
-                return videoPreview.play();
-            });
-        }
-
-        function openCamera() {
-            var facing = isFrontCamera ? 'user' : 'environment';
-            return startCamera(facing).catch(function(err) {
-                // 如果精确的 facingMode 失败，降级到无限制
-                console.warn('Camera init error:', err);
-                return startCamera().catch(function(err2) {
-                    console.error('Camera fallback error:', err2);
-                    throw err2;
-                });
-            });
-        }
-
-        // =============================================================
-        //  拍照：从视频帧中截取
-        // =============================================================
-        function capturePhoto() {
-            var canvas = document.createElement('canvas');
-            var video = videoPreview;
-            // 使用视频的实际分辨率
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            var ctx = canvas.getContext('2d');
-            // 后置摄像头不需要翻转，前置需要镜像（让自拍更自然）
-            if (isFrontCamera) {
-                ctx.translate(canvas.width, 0);
-                ctx.scale(-1, 1);
-            }
-            ctx.drawImage(video, 0, 0);
-            return canvas.toDataURL('image/jpeg', 0.92);
         }
 
         // =============================================================
@@ -1417,7 +1250,7 @@
             speakText(text);
         });
 
-        // --- 拍照按钮 ---
+        // --- 拍照按钮：直接唤起系统相机 / 选择相册 ---
         photoBtn.addEventListener('click', function() {
             if (isAnalyzing) {
                 showToast('正在分析中，请稍候...');
@@ -1430,81 +1263,38 @@
                 apiKeyInput.focus();
                 return;
             }
-            // 尝试打开相机
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                // 不支持 getUserMedia，降级到文件输入
-                cameraInput.click();
-                return;
-            }
-            cameraOverlay.classList.add('show');
-            openCamera().catch(function(err) {
-                console.error('Camera error:', err);
-                cameraOverlay.classList.remove('show');
-                // 降级到文件输入
-                showToast('无法打开相机，将使用相册选择', 'error', 2500);
-                setTimeout(function() { cameraInput.click(); }, 500);
-            });
+            // 触发隐藏的文件输入 —— 移动端自动打开相机，桌面端打开文件选择器
+            cameraInput.click();
         });
 
-        // --- 相机页面事件 ---
-        camCancelBtn.addEventListener('click', function() {
-            stopCamera();
-            cameraOverlay.classList.remove('show');
+        // --- 文件输入：选择/拍摄照片后显示预览 ---
+        cameraInput.addEventListener('change', function() {
+            var file = cameraInput.files && cameraInput.files[0];
+            if (!file) return;
+            // 重置以便重复选择同一文件
+            cameraInput.value = '';
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                capturedImageData = e.target.result;
+                previewImg.src = capturedImageData;
+                previewOverlay.classList.add('show');
+            };
+            reader.readAsDataURL(file);
         });
 
-        camSwitchBtn.addEventListener('click', function() {
-            isFrontCamera = !isFrontCamera;
-            openCamera().catch(function(err) {
-                console.error('Camera switch error:', err);
-                isFrontCamera = !isFrontCamera; // 恢复
-                showToast('切换摄像头失败', 'error');
-            });
-        });
-
-        captureBtn.addEventListener('click', function() {
-            var dataUrl = capturePhoto();
-            stopCamera();
-            cameraOverlay.classList.remove('show');
-            // 显示预览
-            previewImg.src = dataUrl;
-            previewOverlay.classList.add('show');
-        });
-
-        // --- 预览页面事件 ---
+        // --- 预览页面：重拍 ---
         retakeBtn.addEventListener('click', function() {
             previewOverlay.classList.remove('show');
             capturedImageData = null;
-            // 重新打开相机
-            cameraOverlay.classList.add('show');
-            openCamera().catch(function(err) {
-                cameraOverlay.classList.remove('show');
-                showToast('无法打开相机', 'error');
-            });
+            cameraInput.click();
         });
 
+        // --- 预览页面：确认识别 ---
         confirmPhotoBtn.addEventListener('click', function() {
             var dataUrl = previewImg.src;
             previewOverlay.classList.remove('show');
             capturedImageData = dataUrl;
-            // 执行识别
             handlePhotoCapture(dataUrl);
-        });
-
-        // --- 文件输入降级方案 ---
-        cameraInput.addEventListener('change', function() {
-            var file = cameraInput.files && cameraInput.files[0];
-            if (!file) return;
-            // 重置 input 以便重复选择同一文件
-            cameraInput.value = '';
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var dataUrl = e.target.result;
-                // 直接显示预览（不经过相机覆盖层）
-                previewImg.src = dataUrl;
-                previewOverlay.classList.add('show');
-                capturedImageData = dataUrl;
-            };
-            reader.readAsDataURL(file);
         });
 
         // --- 设置面板事件 ---
