@@ -394,7 +394,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: #000;
+            background: rgba(0,0,0,0.85);
             z-index: 1150;
             flex-direction: column;
         }
@@ -402,18 +402,45 @@
             display: flex;
         }
 
+        .preview-overlay .preview-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            background: rgba(0,0,0,0.4);
+        }
+        .preview-overlay .preview-top .preview-title {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .preview-overlay .preview-top .preview-close {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .preview-overlay .preview-img-wrap {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 16px;
+            min-height: 0;
         }
         .preview-overlay .preview-img-wrap img {
             max-width: 100%;
             max-height: 100%;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(255,255,255,0.15);
+            box-shadow: 0 4px 30px rgba(255,255,255,0.1);
             object-fit: contain;
         }
 
@@ -421,37 +448,40 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 30px;
-            padding: 20px 16px 36px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.6));
+            gap: 16px;
+            padding: 16px 16px 36px;
+            background: rgba(0,0,0,0.6);
+            border-top: 1px solid rgba(255,255,255,0.08);
         }
         .preview-overlay .preview-footer button {
-            padding: 14px 32px;
+            padding: 16px 36px;
             font-size: 22px;
-            font-weight: 600;
+            font-weight: 700;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             transition: transform 0.15s, background 0.2s;
-            min-width: 120px;
+            min-width: 130px;
+            letter-spacing: 1px;
         }
         .preview-overlay .preview-footer button:active {
             transform: scale(0.95);
         }
         .preview-overlay .preview-footer .btn-retake {
-            background: rgba(255,255,255,0.2);
+            background: #555;
             color: #fff;
-            backdrop-filter: blur(4px);
+            border: 2px solid #888;
         }
         .preview-overlay .preview-footer .btn-retake:hover {
-            background: rgba(255,255,255,0.3);
+            background: #666;
         }
         .preview-overlay .preview-footer .btn-confirm {
             background: #0a7e3d;
             color: #fff;
+            box-shadow: 0 4px 16px rgba(10,126,61,0.4);
         }
         .preview-overlay .preview-footer .btn-confirm:hover {
-            background: #086a33;
+            background: #0d9649;
         }
 
         /* ===== Loading 指示器 ===== */
@@ -582,7 +612,7 @@
 
         <div class="quick-actions">
             <button id="photoBtn">📸 拍药盒</button>
-            <span class="hint">📸 拍照后通过 DeepSeek AI 识别药盒文字，自动分析安全性</span>
+            <span class="hint">📸 拍照后通过 DMXAPI 大模型识别药盒文字，自动分析安全性</span>
         </div>
     </div>
 
@@ -602,17 +632,14 @@
     </div>
 </div>
 
-<!-- ===== 隐藏的文件输入（相机降级方案） ===== -->
-<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
-
 <!-- ===== 设置面板 ===== -->
 <div class="modal-overlay" id="settingsModal">
     <div class="modal-box">
         <h2>⚙️ API 设置</h2>
-        <p>输入你的 DeepSeek API Key 以启用拍照识别功能。<br>Key 仅保存在本地浏览器中。</p>
-        <label for="apiKeyInput">DeepSeek API Key</label>
+        <p>输入你的 DMXAPI Key 以启用拍照识别功能。<br>Key 仅保存在本地浏览器中。</p>
+        <label for="apiKeyInput">DMXAPI Key</label>
         <input type="password" id="apiKeyInput" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
-        <a class="api-link" href="https://platform.deepseek.com/api_keys" target="_blank">🔑 如何获取 DeepSeek API Key？</a>
+        <a class="api-link" href="https://www.dmxapi.cn/" target="_blank">🔑 如何获取 DMXAPI Key？</a>
         <div class="modal-actions">
             <button class="btn-primary" id="saveApiKeyBtn">💾 保存</button>
             <button class="btn-secondary" id="closeSettingsBtn">取消</button>
@@ -623,12 +650,16 @@
 
 <!-- ===== 拍照预览 ===== -->
 <div class="preview-overlay" id="previewOverlay">
+    <div class="preview-top">
+        <span class="preview-title">📸 确认照片</span>
+        <button class="preview-close" id="previewCloseBtn">✕</button>
+    </div>
     <div class="preview-img-wrap">
         <img id="previewImg" alt="药盒照片" />
     </div>
     <div class="preview-footer">
-        <button class="btn-retake" id="retakeBtn">🔁 重拍</button>
-        <button class="btn-confirm" id="confirmPhotoBtn">🔍 识别</button>
+        <button class="btn-retake" id="retakeBtn">🔁 重新拍摄</button>
+        <button class="btn-confirm" id="confirmPhotoBtn">🔍 上传识别</button>
     </div>
 </div>
 
@@ -646,7 +677,7 @@
 
 <script>
     // ================================================================
-    //  核心逻辑 —— 结合 DeepSeek OCR + 规则引擎 + 语音朗读
+    //  核心逻辑 —— 结合 DMXAPI 大模型视觉识别 + 规则引擎 + 语音朗读
     // ================================================================
 
     (function() {
@@ -659,7 +690,6 @@
         const resultActions  = document.getElementById('resultActions');
         const speakBtn       = document.getElementById('speakBtn');
         const photoBtn       = document.getElementById('photoBtn');
-        const cameraInput    = document.getElementById('cameraInput');
 
         // 设置
         const settingsIcon    = document.getElementById('settingsIcon');
@@ -674,7 +704,7 @@
         const previewImg      = document.getElementById('previewImg');
         const retakeBtn       = document.getElementById('retakeBtn');
         const confirmPhotoBtn = document.getElementById('confirmPhotoBtn');
-
+        const previewCloseBtn = document.getElementById('previewCloseBtn');
         // Loading
         const loadingOverlay  = document.getElementById('loadingOverlay');
         const loadingText     = document.getElementById('loadingText');
@@ -709,23 +739,23 @@
         //  API Key 管理
         // =============================================================
         function loadApiKey() {
-            var key = localStorage.getItem('deepseek_api_key') || '';
+            var key = localStorage.getItem('dmxapi_key') || '';
             apiKeyInput.value = key;
             return key;
         }
 
         function saveApiKey(key) {
             if (key && key.trim()) {
-                localStorage.setItem('deepseek_api_key', key.trim());
+                localStorage.setItem('dmxapi_key', key.trim());
                 showToast('✅ API Key 已保存', 'success');
             } else {
-                localStorage.removeItem('deepseek_api_key');
+                localStorage.removeItem('dmxapi_key');
                 showToast('已清除 API Key');
             }
         }
 
         function getApiKey() {
-            return localStorage.getItem('deepseek_api_key') || '';
+            return localStorage.getItem('dmxapi_key') || '';
         }
 
         // =============================================================
@@ -761,62 +791,57 @@
         }
 
         // =============================================================
-        //  DeepSeek API 调用 —— 识别药盒文字
+        //  DMXAPI 大模型调用 —— 识别药盒文字
         // =============================================================
-        async function callDeepSeekOCR(imageBase64) {
+        async function callDMXAPIOCR(imageDataUrl) {
             var apiKey = getApiKey();
             if (!apiKey) {
-                throw new Error('请先设置 DeepSeek API Key（点击右上角 ⚙️）');
+                throw new Error('请先设置 DMXAPI Key（点击右上角 ⚙️）');
             }
 
             // 从 data URL 中提取 base64 数据
-            var base64Data = imageBase64.split(',')[1];
+            var base64Data = imageDataUrl.split(',')[1];
+            var mimeType = imageDataUrl.match(/^data:(image\/\w+);/);
+            mimeType = mimeType ? mimeType[1] : 'image/jpeg';
 
-            var prompt = [
-                '你是一个药品安全识别助手。请分析这张药品包装盒图片，完成以下任务：',
-                '',
-                '【1. 文字提取】请逐项列出所有可识别的文字信息：',
-                '  - 药品/产品名称',
-                '  - 批准文号（国药准字、国食健字、食健备、SC编号、进口药品注册证号等）',
-                '  - 生产厂家/企业名称',
-                '  - 生产日期 / 有效期 / 保质期',
-                '  - 产品批号',
-                '  - 成分 / 主要原料',
-                '  - 功能主治 / 适用范围 / 产品标准',
-                '  - 其他可见文字',
-                '',
-                '【2. 安全评估】',
-                '  - 该产品的声称类型是：药品 / 保健食品 / 普通食品 / 无法判断',
-                '  - 是否有批准文号？文号格式是否正确？',
-                '  - 是否发现以下可疑用语（请逐一检查并列出）：根治、特效、祖传、偏方、秘方、神药、万能、速效、彻底治愈',
-                '  - 是否过期或缺少有效期信息？',
-                '  - 整体风险评价：安全 / 存疑 / 危险',
-                '',
-                '请以简洁清晰的中文回答。'
-            ].join('\n');
+            var prompt = '你是一个药品包装文字识别助手。请仔细识别这张药品包装盒图片中的所有文字，逐项列出：\n\n' +
+                '  - 药品/产品名称\n' +
+                '  - 批准文号（国药准字、国食健字、食健备、SC编号、进口药品注册证号等，请完整抄录）\n' +
+                '  - 生产厂家/企业名称\n' +
+                '  - 生产日期 / 有效期 / 保质期\n' +
+                '  - 产品批号\n' +
+                '  - 成分 / 主要原料\n' +
+                '  - 功能主治 / 适用范围 / 产品标准\n' +
+                '  - 其他可见文字\n\n' +
+                '注意：批准文号请务必完整识别，不要截断。国药准字后面的格式是1个字母+8位数字。\n' +
+                '必须以 JSON 格式返回，格式为：{"text": "你的完整识别结果"}。不要有任何额外说明。';
 
-            var body = {
-                model: 'deepseek-chat',
+            var payload = {
+                model: 'gpt-4o',
                 messages: [
                     {
                         role: 'user',
                         content: [
                             { type: 'text', text: prompt },
-                            { type: 'image_url', image_url: { url: imageBase64 } }
+                            {
+                                type: 'image_url',
+                                image_url: { url: 'data:' + mimeType + ';base64,' + base64Data }
+                            }
                         ]
                     }
                 ],
                 max_tokens: 2048,
-                temperature: 0.1
+                temperature: 0.1,
+                response_format: { type: 'json_object' }
             };
 
-            var resp = await fetch('https://api.deepseek.com/chat/completions', {
+            var resp = await fetch('https://www.dmxapi.cn/v1/chat/completions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + apiKey
                 },
-                body: JSON.stringify(body)
+                body: JSON.stringify(payload)
             });
 
             if (!resp.ok) {
@@ -825,18 +850,38 @@
                     var errData = await resp.json();
                     errMsg = errData.error && errData.error.message ? errData.error.message : '';
                 } catch(e) {}
-                throw new Error('DeepSeek API 错误 (' + resp.status + '): ' + (errMsg || resp.statusText));
+                throw new Error('DMXAPI 错误 (' + resp.status + '): ' + (errMsg || resp.statusText));
             }
 
             var data = await resp.json();
-            if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-                throw new Error('API 返回格式异常');
+            var content = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+            if (!content) {
+                throw new Error('API 返回格式异常，未找到识别结果');
             }
-            return data.choices[0].message.content;
+
+            // 解析 JSON 响应，提取 text 字段
+            var parsed;
+            try {
+                parsed = JSON.parse(content);
+            } catch (e) {
+                // 尝试从文本中提取 JSON
+                var jsonMatch = content.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    try {
+                        parsed = JSON.parse(jsonMatch[0]);
+                    } catch (e2) {
+                        throw new Error('返回内容不是有效 JSON 格式');
+                    }
+                } else {
+                    throw new Error('返回内容不是有效 JSON 格式');
+                }
+            }
+
+            return parsed.text || parsed.content || parsed.result || JSON.stringify(parsed);
         }
 
         // =============================================================
-        //  OCR 结果分析：从 DeepSeek 回答中提取关键信息 + 本地规则引擎
+        //  OCR 结果分析：从 AI 回答中提取关键信息 + 本地规则引擎
         // =============================================================
         function analyzeOCRResult(ocrText) {
             // 1. 尝试提取批准文号
@@ -846,9 +891,7 @@
                 /国食健字[GJ]\d{4,}/g,
                 /食健备[GJ]\d{4,}/g,
                 /SC\d{14}/g,
-                /进口药品注册证号[HZSJ]\d{8}/g,
-                /国药准字[HZSJ]\d{4}/g,
-                /[HZSJ]\d{8}/g
+                /进口药品注册证号[HZSJ]\d{8}/g
             ];
             approvalPatterns.forEach(function(p) {
                 var matches = ocrText.match(p);
@@ -907,14 +950,6 @@
             var hasDrugApproval = /国药准字/.test(ocrText);
             var hasHealthApproval = /国食健字|食健备/.test(ocrText);
             var hasFoodSC = /SC\d{14}/.test(ocrText);
-
-            // 从 DeepSeek 回答中提取其判断
-            var aiSaysDrug = /声称类型.*药品/.test(ocrText) && !/无法判断/.test(ocrText);
-            var aiSaysHealth = /声称类型.*保健/.test(ocrText);
-            var aiSaysFood = /声称类型.*食品/.test(ocrText);
-            var aiRisk = '存疑';
-            if (/风险评价.*安全/.test(ocrText)) aiRisk = '安全';
-            if (/风险评价.*危险/.test(ocrText)) aiRisk = '危险';
 
             // 构建最终结果
             // 优先使用规则引擎的结果（如果有批准文号）
@@ -981,18 +1016,12 @@
             }
 
             // 如果没有批准文号也无明显违规，返回存疑
-            var aiInfo = '';
-            if (aiRisk === '安全') aiInfo = 'AI 评估为安全';
-            else if (aiRisk === '危险') aiInfo = 'AI 评估为危险';
-            else aiInfo = 'AI 未能确定风险等级';
-
             return {
                 status: 'yellow',
                 icon: '🟡',
                 title: '未识别到批准文号',
                 desc: '在药盒上未找到标准的药品/保健品批准文号',
                 detail: '⚠️ 请仔细核对：产品是否声称有治疗功效？<br>' +
-                       '🟡 ' + aiInfo + '<br>' +
                        '💡 建议：输入批准文号到上方文本框进行二次验证'
             };
         }
@@ -1194,13 +1223,13 @@
                 // 显示加载
                 loadingOverlay.classList.add('show');
                 loadingText.textContent = '🤖 AI 正在识别...';
-                loadingSub.textContent = 'DeepSeek 正在分析药盒文字，请稍候（约 5-15 秒）';
+                loadingSub.textContent = 'DMXAPI 大模型正在分析药盒文字，请稍候（约 5-15 秒）';
 
                 // 压缩图片
                 var resized = await resizeImage(dataUrl, 1280);
 
-                // 调用 DeepSeek API
-                var ocrResult = await callDeepSeekOCR(resized);
+                // 调用 DMXAPI 大模型视觉识别
+                var ocrResult = await callDMXAPIOCR(resized);
 
                 // 分析结果
                 var analysis = analyzeOCRResult(ocrResult);
@@ -1250,7 +1279,7 @@
             speakText(text);
         });
 
-        // --- 拍照按钮：直接唤起系统相机 / 选择相册 ---
+        // --- 拍照按钮：动态创建文件输入，唤起系统相机/相册 ---
         photoBtn.addEventListener('click', function() {
             if (isAnalyzing) {
                 showToast('正在分析中，请稍候...');
@@ -1258,43 +1287,91 @@
             }
             // 检查 API Key
             if (!getApiKey()) {
-                showToast('请先设置 DeepSeek API Key（点击右上角 ⚙️）', 'error', 3500);
+                showToast('请先设置 DMXAPI Key（点击右上角 ⚙️）', 'error', 3500);
                 settingsModal.classList.add('show');
                 apiKeyInput.focus();
                 return;
             }
-            // 触发隐藏的文件输入 —— 移动端自动打开相机，桌面端打开文件选择器
-            cameraInput.click();
+            // 动态创建文件输入（避免 HTML 静态元素的兼容问题）
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.style.position = 'fixed';
+            input.style.top = '-100px';
+            input.style.left = '-100px';
+            input.style.opacity = '0';
+            // 用 once: true 确保 change 只触发一次，且自动清理
+            input.addEventListener('change', function onChange(ev) {
+                var file = input.files && input.files[0];
+                if (!file) { document.body.removeChild(input); return; }
+                // 从 body 移除
+                document.body.removeChild(input);
+                // 用 createObjectURL 立即显示（比 FileReader 快且可靠）
+                var objectUrl = URL.createObjectURL(file);
+                capturedImageData = objectUrl;
+                previewImg.src = objectUrl;
+                previewOverlay.classList.add('show');
+            });
+            document.body.appendChild(input);
+            input.click();
         });
 
-        // --- 文件输入：选择/拍摄照片后显示预览 ---
-        cameraInput.addEventListener('change', function() {
-            var file = cameraInput.files && cameraInput.files[0];
-            if (!file) return;
-            // 重置以便重复选择同一文件
-            cameraInput.value = '';
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                capturedImageData = e.target.result;
-                previewImg.src = capturedImageData;
-                previewOverlay.classList.add('show');
-            };
-            reader.readAsDataURL(file);
+        // --- 预览页面：关闭 ---
+        previewCloseBtn.addEventListener('click', function() {
+            previewOverlay.classList.remove('show');
+            if (capturedImageData && capturedImageData.startsWith('blob:')) {
+                URL.revokeObjectURL(capturedImageData);
+            }
+            capturedImageData = null;
         });
 
         // --- 预览页面：重拍 ---
         retakeBtn.addEventListener('click', function() {
             previewOverlay.classList.remove('show');
+            if (capturedImageData && capturedImageData.startsWith('blob:')) {
+                URL.revokeObjectURL(capturedImageData);
+            }
             capturedImageData = null;
-            cameraInput.click();
+            // 重新触发拍照
+            photoBtn.click();
         });
 
         // --- 预览页面：确认识别 ---
         confirmPhotoBtn.addEventListener('click', function() {
-            var dataUrl = previewImg.src;
+            var src = previewImg.src;
             previewOverlay.classList.remove('show');
-            capturedImageData = dataUrl;
-            handlePhotoCapture(dataUrl);
+            if (!src || src === '') {
+                showToast('请先拍摄或选择照片', 'error');
+                return;
+            }
+            // blob URL 需要转成 dataURL 才能发给 API
+            if (src.startsWith('blob:')) {
+                var oldUrl = capturedImageData;
+                loadingOverlay.classList.add('show');
+                loadingText.textContent = '⏳ 正在处理...';
+                loadingSub.textContent = '转换图片格式，请稍候';
+                var img = new Image();
+                img.onload = function() {
+                    var canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+                    if (oldUrl && oldUrl.startsWith('blob:')) URL.revokeObjectURL(oldUrl);
+                    capturedImageData = dataUrl;
+                    loadingOverlay.classList.remove('show');
+                    handlePhotoCapture(dataUrl);
+                };
+                img.onerror = function() {
+                    loadingOverlay.classList.remove('show');
+                    showToast('图片处理失败，请重新选择', 'error');
+                };
+                img.src = src;
+            } else {
+                capturedImageData = src;
+                handlePhotoCapture(src);
+            }
         });
 
         // --- 设置面板事件 ---
@@ -1350,7 +1427,7 @@
         // --- 焦点 ---
         inputEl.focus();
 
-        console.log('💊 药安全 v2 已加载（DeepSeek OCR + 规则引擎 + 语音朗读）');
+        console.log('💊 药安全 v2 已加载（DMXAPI 大模型视觉识别 + 规则引擎 + 语音朗读）');
     })();
 </script>
 
