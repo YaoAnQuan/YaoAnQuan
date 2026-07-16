@@ -32,12 +32,14 @@
             border-radius: 32px;
             padding: 24px 20px 32px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
         }
 
         /* ===== 头部 ===== */
         .header {
             text-align: center;
             margin-bottom: 20px;
+            position: relative;
         }
         .header h1 {
             font-size: 36px;
@@ -49,6 +51,22 @@
             font-size: 18px;
             color: #666;
             margin-top: 4px;
+        }
+        .header .settings-icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 28px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 12px;
+            transition: background 0.2s;
+            line-height: 1;
+        }
+        .header .settings-icon:hover {
+            background: #f0f0f0;
         }
 
         /* ===== 输入区域 ===== */
@@ -106,7 +124,7 @@
             transform: scale(0.96);
         }
 
-        /* ===== 快捷操作按钮（扫码/拍照） ===== */
+        /* ===== 快捷操作按钮（仅拍照） ===== */
         .quick-actions {
             display: flex;
             gap: 12px;
@@ -132,6 +150,13 @@
         }
         .quick-actions button:active {
             transform: scale(0.96);
+        }
+
+        .quick-actions .hint {
+            width: 100%;
+            font-size: 16px;
+            color: #888;
+            margin-top: 6px;
         }
 
         /* ===== 结果卡片 ===== */
@@ -192,10 +217,43 @@
             width: 100%;
         }
 
-        /* ===== 朗读按钮（新增） ===== */
+        /* 拍照结果中的药盒照片缩略图 */
+        .result-area .photo-thumb {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 2px solid #ddd;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        /* OCR 识别出的文本块 */
+        .result-area .ocr-text-block {
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 12px;
+            width: 100%;
+            text-align: left;
+            font-size: 17px;
+            color: #444;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            border: 1px solid #e0e0e0;
+        }
+        .result-area .ocr-text-block summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+            font-size: 18px;
+        }
+
+        /* ===== 朗读按钮 ===== */
         .result-actions {
             margin-top: 14px;
-            display: none;  /* 默认隐藏，有结果时显示 */
+            display: none;
             gap: 12px;
             flex-wrap: wrap;
             justify-content: center;
@@ -227,6 +285,334 @@
             cursor: not-allowed;
         }
 
+        /* ===== 设置面板（模态） ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 28px;
+            padding: 28px 24px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            animation: modalIn 0.25s ease;
+        }
+        @keyframes modalIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to   { transform: translateY(0); opacity: 1; }
+        }
+        .modal-box h2 {
+            font-size: 26px;
+            margin-bottom: 6px;
+        }
+        .modal-box p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 18px;
+        }
+        .modal-box label {
+            display: block;
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+        .modal-box input[type="password"],
+        .modal-box input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 20px;
+            border: 2px solid #ccd7e6;
+            border-radius: 14px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .modal-box input:focus {
+            border-color: #0a7e3d;
+        }
+        .modal-box .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .modal-box .modal-actions button {
+            flex: 1;
+            padding: 14px 0;
+            font-size: 20px;
+            font-weight: 600;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            min-width: 100px;
+        }
+        .modal-box .modal-actions .btn-primary {
+            background: #0a7e3d;
+            color: #fff;
+        }
+        .modal-box .modal-actions .btn-primary:hover {
+            background: #086a33;
+        }
+        .modal-box .modal-actions .btn-secondary {
+            background: #eee;
+            color: #333;
+        }
+        .modal-box .modal-actions .btn-secondary:hover {
+            background: #ddd;
+        }
+        .modal-box .modal-actions .btn-danger {
+            background: #e74c3c;
+            color: #fff;
+        }
+        .modal-box .modal-actions .btn-danger:hover {
+            background: #c0392b;
+        }
+        .modal-box .api-link {
+            display: inline-block;
+            font-size: 16px;
+            color: #0a7e3d;
+            margin-top: 12px;
+            text-decoration: underline;
+        }
+
+        /* ===== 相机取景器（全屏覆盖） ===== */
+        .camera-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #000;
+            z-index: 1100;
+            flex-direction: column;
+        }
+        .camera-overlay.show {
+            display: flex;
+        }
+
+        .camera-overlay .camera-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            color: #fff;
+            z-index: 2;
+            position: absolute;
+            top: 0; left: 0; right: 0;
+        }
+        .camera-overlay .camera-header button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+        }
+        .camera-overlay .camera-header button:active {
+            transform: scale(0.95);
+        }
+        .camera-overlay .camera-header .cam-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .camera-overlay video {
+            flex: 1;
+            width: 100%;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .camera-overlay .camera-footer {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 16px 40px;
+            gap: 40px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.6));
+        }
+        .camera-overlay .camera-footer .capture-btn {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s;
+        }
+        .camera-overlay .camera-footer .capture-btn:active {
+            transform: scale(0.9);
+        }
+        .camera-overlay .camera-footer .capture-btn .inner {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        /* ===== 拍照预览（全屏覆盖） ===== */
+        .preview-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #000;
+            z-index: 1150;
+            flex-direction: column;
+        }
+        .preview-overlay.show {
+            display: flex;
+        }
+
+        .preview-overlay .preview-img-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .preview-overlay .preview-img-wrap img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(255,255,255,0.15);
+            object-fit: contain;
+        }
+
+        .preview-overlay .preview-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            padding: 20px 16px 36px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.6));
+        }
+        .preview-overlay .preview-footer button {
+            padding: 14px 32px;
+            font-size: 22px;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.15s, background 0.2s;
+            min-width: 120px;
+        }
+        .preview-overlay .preview-footer button:active {
+            transform: scale(0.95);
+        }
+        .preview-overlay .preview-footer .btn-retake {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            backdrop-filter: blur(4px);
+        }
+        .preview-overlay .preview-footer .btn-retake:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .preview-overlay .preview-footer .btn-confirm {
+            background: #0a7e3d;
+            color: #fff;
+        }
+        .preview-overlay .preview-footer .btn-confirm:hover {
+            background: #086a33;
+        }
+
+        /* ===== Loading 指示器 ===== */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 1200;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-box {
+            background: #fff;
+            border-radius: 24px;
+            padding: 32px 36px;
+            text-align: center;
+            max-width: 340px;
+            width: 90%;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #e0e0e0;
+            border-top-color: #0a7e3d;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading-box p {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        .loading-box .loading-sub {
+            font-size: 16px;
+            color: #888;
+            margin-top: 6px;
+        }
+
+        /* ===== 通知 Toast ===== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 18px;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.toast-error {
+            background: #e74c3c;
+        }
+        .toast.toast-success {
+            background: #0a7e3d;
+        }
+
         /* ===== 免责声明 ===== */
         .disclaimer {
             margin-top: 16px;
@@ -250,6 +636,11 @@
             .input-row button { font-size: 20px; padding: 14px 20px; }
             .quick-actions button { font-size: 18px; }
             .speak-btn { font-size: 20px; padding: 12px 24px; }
+            .camera-overlay .camera-footer { padding: 16px 12px 32px; gap: 24px; }
+            .camera-overlay .camera-footer .capture-btn { width: 64px; height: 64px; }
+            .camera-overlay .camera-footer .capture-btn .inner { width: 48px; height: 48px; }
+            .modal-box { padding: 20px 16px; }
+            .modal-box h2 { font-size: 22px; }
         }
     </style>
 </head>
@@ -257,13 +648,14 @@
 
 <div class="app-container">
 
-    <!-- 头部 -->
+    <!-- ===== 头部 ===== -->
     <div class="header">
         <h1>💊 药安全</h1>
-        <p>输入批准文号 · 快速核对</p>
+        <p>拍照或输入文号 · AI 智能识别</p>
+        <button class="settings-icon" id="settingsIcon" title="API 设置">⚙️</button>
     </div>
 
-    <!-- 输入区 -->
+    <!-- ===== 输入区 ===== -->
     <div class="input-section">
         <label for="drugInput">🔍 输入文号</label>
         <div class="input-row">
@@ -272,130 +664,580 @@
         </div>
 
         <div class="quick-actions">
-            <button id="scanBtn">📷 扫条形码</button>
-            <button id="photoBtn">🧴 拍药盒</button>
+            <button id="photoBtn">📸 拍药盒</button>
+            <span class="hint">📸 拍照后通过 DeepSeek AI 识别药盒文字，自动分析安全性</span>
         </div>
-        <p style="font-size:16px; color:#888; margin-top:10px;">
-            ⚡ 快捷功能为演示占位，后续可对接真实扫码/OCR
-        </p>
     </div>
 
-    <!-- 结果展示 -->
+    <!-- ===== 结果展示 ===== -->
     <div class="result-area" id="resultArea">
-        <span class="placeholder">👆 输入文号后点击“查验”</span>
+        <span class="placeholder">👆 输入文号或拍照识别</span>
     </div>
 
-    <!-- 朗读按钮（新增） -->
+    <!-- ===== 朗读按钮 ===== -->
     <div class="result-actions" id="resultActions">
         <button class="speak-btn" id="speakBtn">🔊 朗读结果</button>
     </div>
 
-    <!-- 免责声明 -->
+    <!-- ===== 免责声明 ===== -->
     <div class="disclaimer">
         ⚠️ 结果仅供参考，最终以<a href="https://www.nmpa.gov.cn/" target="_blank">国家药监局官网</a>查询为准
     </div>
 </div>
 
+<!-- ===== 隐藏的文件输入（相机降级方案） ===== -->
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
+
+<!-- ===== 设置面板 ===== -->
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal-box">
+        <h2>⚙️ API 设置</h2>
+        <p>输入你的 DeepSeek API Key 以启用拍照识别功能。<br>Key 仅保存在本地浏览器中。</p>
+        <label for="apiKeyInput">DeepSeek API Key</label>
+        <input type="password" id="apiKeyInput" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
+        <a class="api-link" href="https://platform.deepseek.com/api_keys" target="_blank">🔑 如何获取 DeepSeek API Key？</a>
+        <div class="modal-actions">
+            <button class="btn-primary" id="saveApiKeyBtn">💾 保存</button>
+            <button class="btn-secondary" id="closeSettingsBtn">取消</button>
+            <button class="btn-danger" id="clearApiKeyBtn">清除</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 相机取景器 ===== -->
+<div class="camera-overlay" id="cameraOverlay">
+    <div class="camera-header">
+        <button id="camCancelBtn">✕ 取消</button>
+        <span class="cam-title">📸 对准药盒</span>
+        <button id="camSwitchBtn">🔄 翻转</button>
+    </div>
+    <video id="videoPreview" playsinline autoplay></video>
+    <div class="camera-footer">
+        <div></div>
+        <div class="capture-btn" id="captureBtn">
+            <div class="inner"></div>
+        </div>
+        <div></div>
+    </div>
+</div>
+
+<!-- ===== 拍照预览 ===== -->
+<div class="preview-overlay" id="previewOverlay">
+    <div class="preview-img-wrap">
+        <img id="previewImg" alt="药盒照片" />
+    </div>
+    <div class="preview-footer">
+        <button class="btn-retake" id="retakeBtn">🔁 重拍</button>
+        <button class="btn-confirm" id="confirmPhotoBtn">🔍 识别</button>
+    </div>
+</div>
+
+<!-- ===== Loading 指示器 ===== -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-box">
+        <div class="spinner"></div>
+        <p id="loadingText">正在识别...</p>
+        <p class="loading-sub" id="loadingSub">AI 正在分析药盒文字，请稍候</p>
+    </div>
+</div>
+
+<!-- ===== Toast 通知 ===== -->
+<div class="toast" id="toast"></div>
+
 <script>
-    // ============================================================
-    //  核心逻辑 —— 真假药判断引擎 + 语音朗读
-    // ============================================================
+    // ================================================================
+    //  核心逻辑 —— 结合 DeepSeek OCR + 规则引擎 + 语音朗读
+    // ================================================================
 
     (function() {
-        const inputEl = document.getElementById('drugInput');
-        const checkBtn = document.getElementById('checkBtn');
-        const resultArea = document.getElementById('resultArea');
-        const resultActions = document.getElementById('resultActions');
-        const speakBtn = document.getElementById('speakBtn');
-        const scanBtn = document.getElementById('scanBtn');
-        const photoBtn = document.getElementById('photoBtn');
+        'use strict';
 
-        // ---------- 用于存储当前结果（供朗读使用） ----------
-        let currentResult = null;
+        // ---------- DOM 引用 ----------
+        const inputEl        = document.getElementById('drugInput');
+        const checkBtn       = document.getElementById('checkBtn');
+        const resultArea     = document.getElementById('resultArea');
+        const resultActions  = document.getElementById('resultActions');
+        const speakBtn       = document.getElementById('speakBtn');
+        const photoBtn       = document.getElementById('photoBtn');
+        const cameraInput    = document.getElementById('cameraInput');
 
-        // ---------- 规则引擎 ----------
-        function analyzeDrug(code) {
-            const raw = code.trim().toUpperCase();
-            if (!raw) {
+        // 设置
+        const settingsIcon    = document.getElementById('settingsIcon');
+        const settingsModal   = document.getElementById('settingsModal');
+        const apiKeyInput     = document.getElementById('apiKeyInput');
+        const saveApiKeyBtn   = document.getElementById('saveApiKeyBtn');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+        const clearApiKeyBtn  = document.getElementById('clearApiKeyBtn');
+
+        // 相机
+        const cameraOverlay   = document.getElementById('cameraOverlay');
+        const videoPreview    = document.getElementById('videoPreview');
+        const camCancelBtn    = document.getElementById('camCancelBtn');
+        const camSwitchBtn    = document.getElementById('camSwitchBtn');
+        const captureBtn      = document.getElementById('captureBtn');
+
+        // 预览
+        const previewOverlay  = document.getElementById('previewOverlay');
+        const previewImg      = document.getElementById('previewImg');
+        const retakeBtn       = document.getElementById('retakeBtn');
+        const confirmPhotoBtn = document.getElementById('confirmPhotoBtn');
+
+        // Loading
+        const loadingOverlay  = document.getElementById('loadingOverlay');
+        const loadingText     = document.getElementById('loadingText');
+        const loadingSub      = document.getElementById('loadingSub');
+
+        // Toast
+        const toast           = document.getElementById('toast');
+        let toastTimer        = null;
+
+        // ---------- 状态 ----------
+        let currentResult     = null;      // 当前分析结果（供朗读用）
+        let capturedImageData = null;      // 当前捕获的图片数据 (dataURL)
+        let currentStream     = null;      // 摄像头流
+        let isFrontCamera     = false;     // 前后摄像头切换
+        let isAnalyzing       = false;     // 防止重复提交
+
+        // =============================================================
+        //  Toast 通知
+        // =============================================================
+        function showToast(msg, type, duration) {
+            if (toastTimer) clearTimeout(toastTimer);
+            toast.textContent = msg;
+            toast.className = 'toast';
+            if (type) toast.classList.add('toast-' + type);
+            // 触发重排后显示
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            toastTimer = setTimeout(function() {
+                toast.classList.remove('show');
+            }, duration || 3000);
+        }
+
+        // =============================================================
+        //  API Key 管理
+        // =============================================================
+        function loadApiKey() {
+            var key = localStorage.getItem('deepseek_api_key') || '';
+            apiKeyInput.value = key;
+            return key;
+        }
+
+        function saveApiKey(key) {
+            if (key && key.trim()) {
+                localStorage.setItem('deepseek_api_key', key.trim());
+                showToast('✅ API Key 已保存', 'success');
+            } else {
+                localStorage.removeItem('deepseek_api_key');
+                showToast('已清除 API Key');
+            }
+        }
+
+        function getApiKey() {
+            return localStorage.getItem('deepseek_api_key') || '';
+        }
+
+        // =============================================================
+        //  相机管理
+        // =============================================================
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(function(t) { t.stop(); });
+                currentStream = null;
+            }
+        }
+
+        function startCamera(facingMode) {
+            stopCamera();
+            var constraints = {
+                video: {
+                    facingMode: facingMode || 'environment',
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 }
+                },
+                audio: false
+            };
+            return navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+                currentStream = stream;
+                videoPreview.srcObject = stream;
+                return videoPreview.play();
+            });
+        }
+
+        function openCamera() {
+            var facing = isFrontCamera ? 'user' : 'environment';
+            return startCamera(facing).catch(function(err) {
+                // 如果精确的 facingMode 失败，降级到无限制
+                console.warn('Camera init error:', err);
+                return startCamera().catch(function(err2) {
+                    console.error('Camera fallback error:', err2);
+                    throw err2;
+                });
+            });
+        }
+
+        // =============================================================
+        //  拍照：从视频帧中截取
+        // =============================================================
+        function capturePhoto() {
+            var canvas = document.createElement('canvas');
+            var video = videoPreview;
+            // 使用视频的实际分辨率
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            var ctx = canvas.getContext('2d');
+            // 后置摄像头不需要翻转，前置需要镜像（让自拍更自然）
+            if (isFrontCamera) {
+                ctx.translate(canvas.width, 0);
+                ctx.scale(-1, 1);
+            }
+            ctx.drawImage(video, 0, 0);
+            return canvas.toDataURL('image/jpeg', 0.92);
+        }
+
+        // =============================================================
+        //  图片压缩（发送 API 前缩小尺寸）
+        // =============================================================
+        function resizeImage(dataUrl, maxSize) {
+            maxSize = maxSize || 1280;
+            return new Promise(function(resolve) {
+                var img = new Image();
+                img.onload = function() {
+                    var width = img.width;
+                    var height = img.height;
+                    if (width <= maxSize && height <= maxSize) {
+                        resolve(dataUrl);
+                        return;
+                    }
+                    if (width > height) {
+                        height = Math.round(height * maxSize / width);
+                        width = maxSize;
+                    } else {
+                        width = Math.round(width * maxSize / height);
+                        height = maxSize;
+                    }
+                    var canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.85));
+                };
+                img.src = dataUrl;
+            });
+        }
+
+        // =============================================================
+        //  DeepSeek API 调用 —— 识别药盒文字
+        // =============================================================
+        async function callDeepSeekOCR(imageBase64) {
+            var apiKey = getApiKey();
+            if (!apiKey) {
+                throw new Error('请先设置 DeepSeek API Key（点击右上角 ⚙️）');
+            }
+
+            // 从 data URL 中提取 base64 数据
+            var base64Data = imageBase64.split(',')[1];
+
+            var prompt = [
+                '你是一个药品安全识别助手。请分析这张药品包装盒图片，完成以下任务：',
+                '',
+                '【1. 文字提取】请逐项列出所有可识别的文字信息：',
+                '  - 药品/产品名称',
+                '  - 批准文号（国药准字、国食健字、食健备、SC编号、进口药品注册证号等）',
+                '  - 生产厂家/企业名称',
+                '  - 生产日期 / 有效期 / 保质期',
+                '  - 产品批号',
+                '  - 成分 / 主要原料',
+                '  - 功能主治 / 适用范围 / 产品标准',
+                '  - 其他可见文字',
+                '',
+                '【2. 安全评估】',
+                '  - 该产品的声称类型是：药品 / 保健食品 / 普通食品 / 无法判断',
+                '  - 是否有批准文号？文号格式是否正确？',
+                '  - 是否发现以下可疑用语（请逐一检查并列出）：根治、特效、祖传、偏方、秘方、神药、万能、速效、彻底治愈',
+                '  - 是否过期或缺少有效期信息？',
+                '  - 整体风险评价：安全 / 存疑 / 危险',
+                '',
+                '请以简洁清晰的中文回答。'
+            ].join('\n');
+
+            var body = {
+                model: 'deepseek-chat',
+                messages: [
+                    {
+                        role: 'user',
+                        content: [
+                            { type: 'text', text: prompt },
+                            { type: 'image_url', image_url: { url: imageBase64 } }
+                        ]
+                    }
+                ],
+                max_tokens: 2048,
+                temperature: 0.1
+            };
+
+            var resp = await fetch('https://api.deepseek.com/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + apiKey
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (!resp.ok) {
+                var errMsg = '';
+                try {
+                    var errData = await resp.json();
+                    errMsg = errData.error && errData.error.message ? errData.error.message : '';
+                } catch(e) {}
+                throw new Error('DeepSeek API 错误 (' + resp.status + '): ' + (errMsg || resp.statusText));
+            }
+
+            var data = await resp.json();
+            if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                throw new Error('API 返回格式异常');
+            }
+            return data.choices[0].message.content;
+        }
+
+        // =============================================================
+        //  OCR 结果分析：从 DeepSeek 回答中提取关键信息 + 本地规则引擎
+        // =============================================================
+        function analyzeOCRResult(ocrText) {
+            // 1. 尝试提取批准文号
+            var approvalNumbers = [];
+            var approvalPatterns = [
+                /国药准字[HZSJ]\d{8}/g,
+                /国食健字[GJ]\d{4,}/g,
+                /食健备[GJ]\d{4,}/g,
+                /SC\d{14}/g,
+                /进口药品注册证号[HZSJ]\d{8}/g,
+                /国药准字[HZSJ]\d{4}/g,
+                /[HZSJ]\d{8}/g
+            ];
+            approvalPatterns.forEach(function(p) {
+                var matches = ocrText.match(p);
+                if (matches) {
+                    matches.forEach(function(m) { approvalNumbers.push(m); });
+                }
+            });
+            // 去重
+            approvalNumbers = approvalNumbers.filter(function(v, i, a) { return a.indexOf(v) === i; });
+
+            // 2. 运行本地规则引擎
+            var localResults = [];
+            if (approvalNumbers.length > 0) {
+                approvalNumbers.forEach(function(code) {
+                    var r = analyzeDrugCode(code);
+                    if (r.status !== 'none') localResults.push(r);
+                });
+            }
+
+            // 3. 检查可疑关键词（全文本）
+            var fakeKeywords = ['根治', '特效', '祖传', '偏方', '秘方', '神药', '万能', '速效', '彻底治愈', '永不复发'];
+            var foundFake = [];
+            fakeKeywords.forEach(function(kw) {
+                if (ocrText.indexOf(kw) !== -1) {
+                    foundFake.push(kw);
+                }
+            });
+
+            // 4. 检查过期/有效期信息
+            var hasExpiryInfo = /有效期|保质期|生产日期|EXP|失效/.test(ocrText);
+            var isExpired = false;
+            var expiryMatch = ocrText.match(/(\d{4})\s*[年\.\-/]\s*(\d{1,2})\s*[月\.\-/]/);
+            if (expiryMatch) {
+                var year = parseInt(expiryMatch[1], 10);
+                var month = parseInt(expiryMatch[2], 10);
+                if (year < 2026 || (year === 2026 && month < 7)) {
+                    isExpired = true;
+                }
+            }
+            // 也检查 "有效期至" 后的年份
+            var expiryMatch2 = ocrText.match(/有效期至.*?(\d{4})/);
+            if (expiryMatch2) {
+                var year2 = parseInt(expiryMatch2[1], 10);
+                if (year2 < 2026) {
+                    isExpired = true;
+                } else if (year2 === 2026) {
+                    // 检查是否提到月份
+                    var monthMatch = expiryMatch2[0].match(/(\d{4})[年\.\-/](\d{1,2})/);
+                    if (monthMatch && parseInt(monthMatch[2], 10) < 7) {
+                        isExpired = true;
+                    }
+                }
+            }
+
+            // 5. 综合判断
+            var hasDrugApproval = /国药准字/.test(ocrText);
+            var hasHealthApproval = /国食健字|食健备/.test(ocrText);
+            var hasFoodSC = /SC\d{14}/.test(ocrText);
+
+            // 从 DeepSeek 回答中提取其判断
+            var aiSaysDrug = /声称类型.*药品/.test(ocrText) && !/无法判断/.test(ocrText);
+            var aiSaysHealth = /声称类型.*保健/.test(ocrText);
+            var aiSaysFood = /声称类型.*食品/.test(ocrText);
+            var aiRisk = '存疑';
+            if (/风险评价.*安全/.test(ocrText)) aiRisk = '安全';
+            if (/风险评价.*危险/.test(ocrText)) aiRisk = '危险';
+
+            // 构建最终结果
+            // 优先使用规则引擎的结果（如果有批准文号）
+            if (localResults.length > 0) {
+                // 找到最严重的结果
+                var severityOrder = { 'green': 0, 'yellow': 1, 'red': 2 };
+                var worst = localResults[0];
+                localResults.forEach(function(r) {
+                    if ((severityOrder[r.status] || 0) > (severityOrder[worst.status] || 0)) {
+                        worst = r;
+                    }
+                });
+
+                // 附加额外警告
+                var extraWarnings = [];
+                if (foundFake.length > 0) {
+                    extraWarnings.push('发现可疑用语：' + foundFake.join('、'));
+                }
+                if (isExpired) {
+                    extraWarnings.push('⚠️ 该产品可能已过期！');
+                }
+                if (!hasExpiryInfo) {
+                    extraWarnings.push('未识别到有效期信息，请核对包装');
+                }
+
+                var detailParts = [worst.detail];
+                extraWarnings.forEach(function(w) { detailParts.push(w); });
+                worst.detail = detailParts.join('<br>');
+                // 如果有过期，覆盖状态为红色
+                if (isExpired) {
+                    worst.status = 'red';
+                    worst.icon = '🚫';
+                    worst.title = '⚠️ 产品可能已过期';
+                    worst.desc = '识别到有效期信息显示该产品可能已过期';
+                }
+                return worst;
+            }
+
+            // 没有匹配到批准文号
+            var warnings = [];
+            if (foundFake.length > 0) {
+                warnings.push('含有违规用语：' + foundFake.join('、'));
+            }
+            if (isExpired) {
+                warnings.push('该产品可能已过期');
+            }
+            if (foundFake.length > 0) {
                 return {
-                    status: 'none',
-                    icon: '✏️',
-                    title: '请输入文号',
-                    desc: '在输入框中粘贴或输入批准文号',
-                    detail: ''
+                    status: 'red',
+                    icon: '🚫',
+                    title: '⚠️ 发现可疑宣传用语',
+                    desc: foundFake.join('、'),
+                    detail: '❌ 正规药品/食品包装上禁止使用此类夸大宣传词汇'
+                };
+            }
+            if (isExpired) {
+                return {
+                    status: 'red',
+                    icon: '🚫',
+                    title: '⚠️ 产品可能已过期',
+                    desc: '识别到的有效期显示已过期',
+                    detail: '❌ 请勿使用过期药品，立即停止使用并妥善处理'
                 };
             }
 
-            const drugPattern = /^国药准字[HZSJ]\d{8}$/;
+            // 如果没有批准文号也无明显违规，返回存疑
+            var aiInfo = '';
+            if (aiRisk === '安全') aiInfo = 'AI 评估为安全';
+            else if (aiRisk === '危险') aiInfo = 'AI 评估为危险';
+            else aiInfo = 'AI 未能确定风险等级';
+
+            return {
+                status: 'yellow',
+                icon: '🟡',
+                title: '未识别到批准文号',
+                desc: '在药盒上未找到标准的药品/保健品批准文号',
+                detail: '⚠️ 请仔细核对：产品是否声称有治疗功效？<br>' +
+                       '🟡 ' + aiInfo + '<br>' +
+                       '💡 建议：输入批准文号到上方文本框进行二次验证'
+            };
+        }
+
+        // =============================================================
+        //  规则引擎（与原有逻辑一致）
+        // =============================================================
+        function analyzeDrugCode(code) {
+            var raw = (code || '').trim().toUpperCase();
+            if (!raw) {
+                return { status: 'none', icon: '✏️', title: '请输入文号', desc: '在输入框中粘贴或输入批准文号', detail: '' };
+            }
+
+            var drugPattern = /^国药准字[HZSJ]\d{8}$/;
             if (drugPattern.test(raw)) {
-                const letter = raw.charAt(4);
-                const typeMap = { 'H': '化学药', 'Z': '中成药', 'S': '生物药', 'J': '进口分包装' };
-                const type = typeMap[letter] || '药品';
+                var letter = raw.charAt(4);
+                var typeMap = { 'H': '化学药', 'Z': '中成药', 'S': '生物药', 'J': '进口分包装' };
+                var type = typeMap[letter] || '药品';
                 return {
                     status: 'green',
                     icon: '✅',
                     title: '格式符合药品标准',
-                    desc: `文号：${raw}（${type}）`,
+                    desc: '文号：' + raw + '（' + type + '）',
                     detail: '✔ 格式正确，建议前往国家药监局官网核对备案信息'
                 };
             }
 
-            const healthPattern = /^(国食健字[GJ]\d+|食健备[GJ]\d+)$/;
+            var healthPattern = /^(国食健字[GJ]\d+|食健备[GJ]\d+)$/;
             if (healthPattern.test(raw)) {
                 return {
                     status: 'yellow',
                     icon: '🟡',
                     title: '这是保健食品（非药品）',
-                    desc: `文号：${raw}`,
+                    desc: '文号：' + raw,
                     detail: '⚠️ 保健食品不能替代药品，不具备治疗疾病的功能'
                 };
             }
 
-            const foodPattern = /^SC\d{14}$/;
+            var foodPattern = /^SC\d{14}$/;
             if (foodPattern.test(raw)) {
                 return {
                     status: 'yellow',
                     icon: '🟡',
                     title: '这是普通食品',
-                    desc: `生产许可证号：${raw}`,
-                    detail: '⚠️ 食品不具备任何治疗功效，宣传“治病”即为违法'
+                    desc: '生产许可证号：' + raw,
+                    detail: '⚠️ 食品不具备任何治疗功效，宣传"治病"即为违法'
                 };
             }
 
-            const fakeKeywords = ['根治', '降压', '降糖', '风湿', '特效', '祖传', '偏方', '秘方', '神药'];
-            let foundKeyword = null;
-            for (let kw of fakeKeywords) {
-                if (raw.includes(kw)) {
-                    foundKeyword = kw;
-                    break;
+            var fakeKeywords = ['根治', '降压', '降糖', '风湿', '特效', '祖传', '偏方', '秘方', '神药'];
+            for (var i = 0; i < fakeKeywords.length; i++) {
+                if (raw.indexOf(fakeKeywords[i]) !== -1) {
+                    return {
+                        status: 'red',
+                        icon: '🚫',
+                        title: '⚠️ 疑似虚假宣传',
+                        desc: '含有违规用语："' + fakeKeywords[i] + '"',
+                        detail: '❌ 正规药品/食品包装上禁止使用此类夸大宣传词汇'
+                    };
                 }
             }
-            if (foundKeyword) {
-                return {
-                    status: 'red',
-                    icon: '🚫',
-                    title: '⚠️ 疑似虚假宣传',
-                    desc: `含有违规用语：“${foundKeyword}”`,
-                    detail: '❌ 正规药品/食品包装上禁止使用此类夸大宣传词汇'
-                };
-            }
 
-            if (raw.includes('国药准字')) {
+            if (raw.indexOf('国药准字') !== -1) {
                 return {
                     status: 'red',
                     icon: '🚫',
                     title: '文号格式错误',
-                    desc: `“${raw}” 不符合国药准字规范`,
+                    desc: '"' + raw + '" 不符合国药准字规范',
                     detail: '❌ 正规格式：国药准字 + H/Z/S/J + 8位数字'
                 };
             }
 
-            if (raw.includes('国食健字') || raw.includes('食健备')) {
+            if (raw.indexOf('国食健字') !== -1 || raw.indexOf('食健备') !== -1) {
                 return {
                     status: 'red',
                     icon: '🚫',
                     title: '保健品文号格式错误',
-                    desc: `“${raw}” 格式不正确`,
+                    desc: '"' + raw + '" 格式不正确',
                     detail: '❌ 国产：国食健字G+数字 / 食健备G+数字'
                 };
             }
@@ -404,52 +1246,43 @@
                 status: 'red',
                 icon: '❓',
                 title: '无法识别该文号',
-                desc: `输入内容：${raw}`,
+                desc: '输入内容：' + raw,
                 detail: '❌ 既不符合药品、保健品，也不符合食品标准编号，请高度警惕'
             };
         }
 
-        // ---------- 生成朗读文本 ----------
+        // =============================================================
+        //  语音朗读（与原有逻辑一致）
+        // =============================================================
         function getSpeakText(result) {
             if (!result || result.status === 'none') {
                 return '请先输入文号并点击查验';
             }
-            const statusMap = { 'green': '安全', 'yellow': '请注意', 'red': '危险' };
-            const statusWord = statusMap[result.status] || '未知';
-            // 去掉一些特殊符号，让语音更自然
-            const cleanTitle = result.title.replace(/[⚠️✅🚫❓🟡]/g, '').trim();
-            const cleanDesc = result.desc.replace(/[：:✔️⚠️❌]/g, '').trim();
-            const cleanDetail = result.detail.replace(/[：:✔️⚠️❌]/g, '').trim();
-            return `${statusWord}，${cleanTitle}。${cleanDesc}。${cleanDetail}`;
+            var statusMap = { 'green': '安全', 'yellow': '请注意', 'red': '危险' };
+            var statusWord = statusMap[result.status] || '未知';
+            var cleanTitle = result.title.replace(/[⚠️✅🚫❓🟡]/g, '').trim();
+            var cleanDesc = result.desc.replace(/[：:✔️⚠️❌]/g, '').trim();
+            var cleanDetail = result.detail.replace(/<br>/g, '，').replace(/[：:✔️⚠️❌]/g, '').trim();
+            return statusWord + '，' + cleanTitle + '。' + cleanDesc + '。' + cleanDetail;
         }
 
-        // ---------- 语音朗读 ----------
         function speakText(text) {
             if (!('speechSynthesis' in window)) {
-                alert('当前浏览器不支持语音朗读，请使用Chrome或Safari');
+                showToast('当前浏览器不支持语音朗读', 'error');
                 return;
             }
-
-            // 取消当前正在播放的语音
             window.speechSynthesis.cancel();
-
-            const utterance = new SpeechSynthesisUtterance(text);
+            var utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'zh-CN';
-            utterance.rate = 0.85;      // 稍慢，适合老年人
+            utterance.rate = 0.85;
             utterance.pitch = 1.0;
             utterance.volume = 1;
+            var voices = window.speechSynthesis.getVoices();
+            var zhVoice = voices.find(function(v) { return v.lang.startsWith('zh'); });
+            if (zhVoice) utterance.voice = zhVoice;
 
-            // 尝试选择中文语音（如果有）
-            const voices = window.speechSynthesis.getVoices();
-            const zhVoice = voices.find(v => v.lang.startsWith('zh'));
-            if (zhVoice) {
-                utterance.voice = zhVoice;
-            }
-
-            // 朗读状态反馈：禁用按钮，防止重复点击
             speakBtn.disabled = true;
             speakBtn.textContent = '🔊 朗读中...';
-
             utterance.onend = function() {
                 speakBtn.disabled = false;
                 speakBtn.textContent = '🔊 朗读结果';
@@ -458,56 +1291,115 @@
                 speakBtn.disabled = false;
                 speakBtn.textContent = '🔊 朗读结果';
             };
-
             window.speechSynthesis.speak(utterance);
         }
 
-        // ---------- 渲染结果 ----------
-        function renderResult(result) {
+        // =============================================================
+        //  渲染结果
+        // =============================================================
+        function renderResult(result, photoDataUrl, ocrRawText) {
             currentResult = result;
             resultArea.className = 'result-area';
             resultArea.innerHTML = '';
 
             if (result.status === 'none') {
-                resultArea.innerHTML = `<span class="placeholder">👆 ${result.title}</span>`;
+                resultArea.innerHTML = '<span class="placeholder">👆 ' + result.title + '</span>';
                 resultActions.classList.remove('show');
                 return;
             }
 
-            resultArea.classList.add(`status-${result.status}`);
-            const html = `
-                <div class="result-icon">${result.icon}</div>
-                <div class="result-title">${result.title}</div>
-                <div class="result-desc">${result.desc}</div>
-                <div class="result-detail">${result.detail}</div>
-            `;
-            resultArea.innerHTML = html;
+            resultArea.classList.add('status-' + result.status);
 
-            // 显示朗读按钮
+            var photoHtml = photoDataUrl
+                ? '<img class="photo-thumb" src="' + photoDataUrl + '" alt="药盒照片" />'
+                : '';
+
+            var ocrHtml = '';
+            if (ocrRawText) {
+                // 截取前 300 字展示
+                var shortText = ocrRawText.length > 300 ? ocrRawText.slice(0, 300) + '...' : ocrRawText;
+                ocrHtml = '<details class="ocr-text-block"><summary>📄 AI 识别详情</summary>'
+                        + '<div style="margin-top:8px;">' + escapeHtml(shortText) + '</div></details>';
+            }
+
+            var html = ''
+                + photoHtml
+                + '<div class="result-icon">' + result.icon + '</div>'
+                + '<div class="result-title">' + result.title + '</div>'
+                + '<div class="result-desc">' + result.desc + '</div>'
+                + '<div class="result-detail">' + result.detail + '</div>'
+                + ocrHtml;
+
+            resultArea.innerHTML = html;
             resultActions.classList.add('show');
         }
 
-        // ---------- 主检查函数 ----------
-        function handleCheck() {
-            const rawText = inputEl.value;
-            const result = analyzeDrug(rawText);
-            renderResult(result);
-            // 注意：不自动朗读，让用户点击按钮触发
+        // 简易转义
+        function escapeHtml(str) {
+            var div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
         }
 
-        // ---------- 朗读按钮点击事件 ----------
-        speakBtn.addEventListener('click', function() {
-            if (!currentResult || currentResult.status === 'none') {
-                alert('请先查验文号，再点击朗读');
-                return;
+        // =============================================================
+        //  主检查函数（文本输入）
+        // =============================================================
+        function handleCheck() {
+            var rawText = inputEl.value;
+            var result = analyzeDrugCode(rawText);
+            renderResult(result, null, null);
+        }
+
+        // =============================================================
+        //  拍照识别流程
+        // =============================================================
+        async function handlePhotoCapture(dataUrl) {
+            if (isAnalyzing) return;
+            isAnalyzing = true;
+
+            try {
+                // 显示加载
+                loadingOverlay.classList.add('show');
+                loadingText.textContent = '🤖 AI 正在识别...';
+                loadingSub.textContent = 'DeepSeek 正在分析药盒文字，请稍候（约 5-15 秒）';
+
+                // 压缩图片
+                var resized = await resizeImage(dataUrl, 1280);
+
+                // 调用 DeepSeek API
+                var ocrResult = await callDeepSeekOCR(resized);
+
+                // 分析结果
+                var analysis = analyzeOCRResult(ocrResult);
+
+                // 渲染
+                renderResult(analysis, dataUrl, ocrResult);
+
+                // 如果状态不是 "none"，自动朗读
+                if (analysis.status !== 'none') {
+                    var text = getSpeakText(analysis);
+                    setTimeout(function() { speakText(text); }, 500);
+                }
+
+            } catch (err) {
+                console.error('OCR Error:', err);
+                showToast('❌ ' + err.message, 'error', 4000);
+                // 恢复占位状态
+                resultArea.className = 'result-area';
+                resultArea.innerHTML = '<span class="placeholder">📸 拍照识别失败：' + escapeHtml(err.message) + '</span>';
+                resultActions.classList.remove('show');
+            } finally {
+                isAnalyzing = false;
+                loadingOverlay.classList.remove('show');
             }
-            const text = getSpeakText(currentResult);
-            speakText(text);
-        });
+        }
 
-        // ---------- 绑定其他事件 ----------
+        // =============================================================
+        //  事件绑定
+        // =============================================================
+
+        // --- 文本查验 ---
         checkBtn.addEventListener('click', handleCheck);
-
         inputEl.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -515,14 +1407,146 @@
             }
         });
 
-        scanBtn.addEventListener('click', function() {
-            alert('📷 扫码功能开发中……\n后续可调用摄像头扫描条形码');
-        });
-        photoBtn.addEventListener('click', function() {
-            alert('🧴 拍照识别功能开发中……\n后续可对接OCR识别药盒文字');
+        // --- 语音朗读 ---
+        speakBtn.addEventListener('click', function() {
+            if (!currentResult || currentResult.status === 'none') {
+                showToast('请先查验文号或拍照识别', 'error');
+                return;
+            }
+            var text = getSpeakText(currentResult);
+            speakText(text);
         });
 
-        // 预加载语音列表（部分浏览器需要）
+        // --- 拍照按钮 ---
+        photoBtn.addEventListener('click', function() {
+            if (isAnalyzing) {
+                showToast('正在分析中，请稍候...');
+                return;
+            }
+            // 检查 API Key
+            if (!getApiKey()) {
+                showToast('请先设置 DeepSeek API Key（点击右上角 ⚙️）', 'error', 3500);
+                settingsModal.classList.add('show');
+                apiKeyInput.focus();
+                return;
+            }
+            // 尝试打开相机
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                // 不支持 getUserMedia，降级到文件输入
+                cameraInput.click();
+                return;
+            }
+            cameraOverlay.classList.add('show');
+            openCamera().catch(function(err) {
+                console.error('Camera error:', err);
+                cameraOverlay.classList.remove('show');
+                // 降级到文件输入
+                showToast('无法打开相机，将使用相册选择', 'error', 2500);
+                setTimeout(function() { cameraInput.click(); }, 500);
+            });
+        });
+
+        // --- 相机页面事件 ---
+        camCancelBtn.addEventListener('click', function() {
+            stopCamera();
+            cameraOverlay.classList.remove('show');
+        });
+
+        camSwitchBtn.addEventListener('click', function() {
+            isFrontCamera = !isFrontCamera;
+            openCamera().catch(function(err) {
+                console.error('Camera switch error:', err);
+                isFrontCamera = !isFrontCamera; // 恢复
+                showToast('切换摄像头失败', 'error');
+            });
+        });
+
+        captureBtn.addEventListener('click', function() {
+            var dataUrl = capturePhoto();
+            stopCamera();
+            cameraOverlay.classList.remove('show');
+            // 显示预览
+            previewImg.src = dataUrl;
+            previewOverlay.classList.add('show');
+        });
+
+        // --- 预览页面事件 ---
+        retakeBtn.addEventListener('click', function() {
+            previewOverlay.classList.remove('show');
+            capturedImageData = null;
+            // 重新打开相机
+            cameraOverlay.classList.add('show');
+            openCamera().catch(function(err) {
+                cameraOverlay.classList.remove('show');
+                showToast('无法打开相机', 'error');
+            });
+        });
+
+        confirmPhotoBtn.addEventListener('click', function() {
+            var dataUrl = previewImg.src;
+            previewOverlay.classList.remove('show');
+            capturedImageData = dataUrl;
+            // 执行识别
+            handlePhotoCapture(dataUrl);
+        });
+
+        // --- 文件输入降级方案 ---
+        cameraInput.addEventListener('change', function() {
+            var file = cameraInput.files && cameraInput.files[0];
+            if (!file) return;
+            // 重置 input 以便重复选择同一文件
+            cameraInput.value = '';
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var dataUrl = e.target.result;
+                // 直接显示预览（不经过相机覆盖层）
+                previewImg.src = dataUrl;
+                previewOverlay.classList.add('show');
+                capturedImageData = dataUrl;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // --- 设置面板事件 ---
+        settingsIcon.addEventListener('click', function() {
+            loadApiKey();
+            settingsModal.classList.add('show');
+        });
+
+        closeSettingsBtn.addEventListener('click', function() {
+            settingsModal.classList.remove('show');
+        });
+
+        saveApiKeyBtn.addEventListener('click', function() {
+            var key = apiKeyInput.value.trim();
+            if (!key) {
+                showToast('请输入 API Key', 'error');
+                return;
+            }
+            if (!key.startsWith('sk-')) {
+                showToast('Key 格式似乎不对，应以 sk- 开头', 'error');
+                return;
+            }
+            saveApiKey(key);
+            settingsModal.classList.remove('show');
+        });
+
+        clearApiKeyBtn.addEventListener('click', function() {
+            if (confirm('确定要清除已保存的 API Key 吗？')) {
+                saveApiKey('');
+                apiKeyInput.value = '';
+                settingsModal.classList.remove('show');
+            }
+        });
+
+        // 点击模态背景关闭
+        settingsModal.addEventListener('click', function(e) {
+            if (e.target === settingsModal) {
+                settingsModal.classList.remove('show');
+            }
+        });
+
+        // --- 预加载语音列表 ---
         if ('speechSynthesis' in window) {
             window.speechSynthesis.getVoices();
             window.speechSynthesis.onvoiceschanged = function() {
@@ -530,8 +1554,13 @@
             };
         }
 
+        // --- 加载保存的 API Key ---
+        loadApiKey();
+
+        // --- 焦点 ---
         inputEl.focus();
-        console.log('💊 药安全 Demo 已加载（含语音朗读）');
+
+        console.log('💊 药安全 v2 已加载（DeepSeek OCR + 规则引擎 + 语音朗读）');
     })();
 </script>
 
