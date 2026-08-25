@@ -589,6 +589,327 @@
             .modal-box { padding: 20px 16px; }
             .modal-box h2 { font-size: 22px; }
         }
+
+        /* ============================================================
+           【新增】顶部功能导航 Tab（查药 / 吃药提醒）
+           ============================================================ */
+        .top-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+            background: #eef2f7;
+            border-radius: 16px;
+            padding: 6px;
+        }
+        .top-tabs button {
+            flex: 1;
+            padding: 14px 8px;
+            font-size: 22px;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            background: transparent;
+            color: #666;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            white-space: nowrap;
+        }
+        .top-tabs button.active {
+            background: #0a7e3d;
+            color: #fff;
+            box-shadow: 0 2px 10px rgba(10,126,61,0.25);
+        }
+
+        /* 各功能面板显隐 */
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        /* ============================================================
+           【新增】拍照方式选择（相机 / 相册）
+           ============================================================ */
+        .photo-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .photo-actions button {
+            flex: 1;
+            min-width: 120px;
+            padding: 16px 0;
+            font-size: 22px;
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .photo-actions button:active { transform: scale(0.96); }
+        .photo-actions .btn-camera {
+            background: #0a7e3d;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(10,126,61,0.3);
+        }
+        .photo-actions .btn-camera:hover { background: #086a33; }
+        .photo-actions .btn-gallery {
+            background: #e9f2fb;
+            color: #2c6b9e;
+            border: 2px solid #2c6b9e;
+        }
+        .photo-actions .btn-gallery:hover { background: #dbeafa; }
+
+        /* ============================================================
+           【新增】服用提醒 / 服药计划
+           ============================================================ */
+        .reminder-section { display: flex; flex-direction: column; gap: 18px; }
+
+        .reminder-card {
+            background: #fff;
+            border: 2px solid #e3e9f1;
+            border-radius: 20px;
+            padding: 18px 16px;
+        }
+        .reminder-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0a7e3d;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .field-group { margin-bottom: 14px; }
+        .field-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .field-group input[type="text"],
+        .field-group input[type="time"],
+        .field-group input[type="number"] {
+            width: 100%;
+            padding: 15px 16px;
+            font-size: 22px;
+            border: 2px solid #ccd7e6;
+            border-radius: 14px;
+            background: #fafcff;
+            outline: none;
+            transition: border 0.2s;
+            box-sizing: border-box;
+        }
+        .field-group input:focus { border-color: #0a7e3d; }
+
+        .med-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .med-row input[type="time"] {
+            flex: 1;
+            min-width: 130px;
+            padding: 14px;
+            font-size: 22px;
+            border: 2px solid #ccd7e6;
+            border-radius: 14px;
+            background: #fff;
+            outline: none;
+            text-align: center;
+        }
+        .med-row .rm-time {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            border: none;
+            background: #fde8e8;
+            color: #b22222;
+            font-size: 24px;
+            font-weight: 700;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .btn-add-time {
+            padding: 12px 20px;
+            font-size: 20px;
+            font-weight: 600;
+            border: 2px dashed #0a7e3d;
+            background: #fff;
+            color: #0a7e3d;
+            border-radius: 14px;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+        .btn-add-time:hover { background: #e8f5ee; }
+
+        .btn-primary-lg {
+            width: 100%;
+            padding: 18px;
+            font-size: 26px;
+            font-weight: 700;
+            border: none;
+            border-radius: 18px;
+            background: #0a7e3d;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(10,126,61,0.3);
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 6px;
+        }
+        .btn-primary-lg:hover { background: #086a33; }
+        .btn-primary-lg:active { transform: scale(0.98); }
+
+        /* 计划列表 */
+        .plan-list { display: flex; flex-direction: column; gap: 12px; }
+        .plan-item {
+            background: #fff;
+            border: 2px solid #e3e9f1;
+            border-radius: 18px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .plan-item .plan-icon {
+            font-size: 34px;
+            flex-shrink: 0;
+        }
+        .plan-item .plan-info { flex: 1; min-width: 0; }
+        .plan-item .plan-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        .plan-item .plan-meta {
+            font-size: 18px;
+            color: #666;
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+        .plan-item .plan-status {
+            font-size: 16px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        .plan-item .plan-status.todo { background: #fef7e0; color: #b68b00; }
+        .plan-item .plan-status.done { background: #e6f5ed; color: #0a7e3d; }
+        .plan-item .plan-del {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            border: none;
+            background: #fde8e8;
+            color: #b22222;
+            font-size: 22px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .plan-empty {
+            text-align: center;
+            color: #999;
+            font-size: 20px;
+            padding: 40px 0;
+        }
+
+        /* 服药提醒浮层（到点弹窗） */
+        .pill-alert {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1300;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .pill-alert.show { display: flex; }
+        .pill-alert .pill-box {
+            background: #fff;
+            border-radius: 26px;
+            padding: 30px 24px;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalIn 0.25s ease;
+        }
+        .pill-alert .pill-box .pill-icon { font-size: 72px; line-height: 1.1; }
+        .pill-alert .pill-box h3 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #b22222;
+            margin: 8px 0 4px;
+        }
+        .pill-alert .pill-box p {
+            font-size: 26px;
+            color: #333;
+            margin: 8px 0 4px;
+            font-weight: 600;
+        }
+        .pill-alert .pill-box .pill-sub {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 18px;
+        }
+        .pill-alert .pill-box .pill-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .pill-alert .pill-box .pill-actions button {
+            flex: 1;
+            min-width: 130px;
+            padding: 16px 10px;
+            font-size: 24px;
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+        }
+        .pill-alert .pill-box .pill-actions .ok { background: #0a7e3d; color: #fff; }
+        .pill-alert .pill-box .pill-actions .later { background: #eee; color: #333; }
+
+        /* 定时器启用状态提示 */
+        .reminder-enabled {
+            font-size: 16px;
+            color: #0a7e3d;
+            background: #e8f5ee;
+            border-radius: 12px;
+            padding: 10px 14px;
+            text-align: center;
+            margin-bottom: 4px;
+            line-height: 1.5;
+        }
+        .reminder-disabled {
+            font-size: 16px;
+            color: #b68b00;
+            background: #fef7e0;
+            border-radius: 12px;
+            padding: 10px 14px;
+            text-align: center;
+            margin-bottom: 4px;
+            line-height: 1.5;
+        }
+
+        /* 小屏适配补充 */
+        @media (max-width: 420px) {
+            .top-tabs button { font-size: 19px; padding: 12px 4px; }
+            .photo-actions button { font-size: 19px; }
+            .plan-item .plan-name { font-size: 21px; }
+            .field-group input { font-size: 20px; padding: 13px; }
+        }
     </style>
 </head>
 <body>
@@ -598,37 +919,103 @@
     <!-- ===== 头部 ===== -->
     <div class="header">
         <h1>💊 药安全</h1>
-        <p>拍照或输入文号 · AI 智能识别</p>
+        <p>鉴别真伪 · 按时吃药</p>
         <button class="settings-icon" id="settingsIcon" title="API 设置">⚙️</button>
     </div>
 
-    <!-- ===== 输入区 ===== -->
-    <div class="input-section">
-        <label for="drugInput">🔍 输入文号</label>
-        <div class="input-row">
-            <input type="text" id="drugInput" placeholder="例如：国药准字H10983027" />
-            <button id="checkBtn">查 验</button>
+    <!-- ===== 顶部功能导航 ===== -->
+    <div class="top-tabs">
+        <button id="tabCheck" class="active">🔍 查药</button>
+        <button id="tabRemind">⏰ 吃药提醒</button>
+    </div>
+
+    <!-- ===================================================== -->
+    <!--  面板 1：查药 / 鉴别真伪                               -->
+    <!-- ===================================================== -->
+    <div class="panel active" id="panelCheck">
+
+        <!-- ===== 输入区 ===== -->
+        <div class="input-section">
+            <label for="drugInput">🔍 输入文号</label>
+            <div class="input-row">
+                <input type="text" id="drugInput" placeholder="例如：国药准字H10983027" />
+                <button id="checkBtn">查 验</button>
+            </div>
+
+            <div class="quick-actions">
+                <span class="hint">📸 也可以拍照药盒，AI 自动识别并分析安全性</span>
+            </div>
+
+            <!-- 拍照 / 相册 两个入口 -->
+            <div class="photo-actions">
+                <button class="btn-camera" id="photoBtn">📸 相机拍照</button>
+                <button class="btn-gallery" id="galleryBtn">🖼️ 从相册选</button>
+            </div>
         </div>
 
-        <div class="quick-actions">
-            <button id="photoBtn">📸 拍药盒</button>
-            <span class="hint">📸 拍照后通过 DMXAPI 大模型识别药盒文字，自动分析安全性</span>
+        <!-- ===== 结果展示 ===== -->
+        <div class="result-area" id="resultArea">
+            <span class="placeholder">👆 输入文号或拍照识别</span>
+        </div>
+
+        <!-- ===== 朗读按钮 ===== -->
+        <div class="result-actions" id="resultActions">
+            <button class="speak-btn" id="speakBtn">🔊 朗读结果</button>
         </div>
     </div>
 
-    <!-- ===== 结果展示 ===== -->
-    <div class="result-area" id="resultArea">
-        <span class="placeholder">👆 输入文号或拍照识别</span>
-    </div>
+    <!-- ===================================================== -->
+    <!--  面板 2：按时吃药提醒                                 -->
+    <!-- ===================================================== -->
+    <div class="panel" id="panelRemind">
+        <div class="reminder-section">
 
-    <!-- ===== 朗读按钮 ===== -->
-    <div class="result-actions" id="resultActions">
-        <button class="speak-btn" id="speakBtn">🔊 朗读结果</button>
+            <div class="reminder-enabled" id="reminderStatus">⏰ 吃药提醒已开启</div>
+
+            <!-- ===== 新增服药计划 ===== -->
+            <div class="reminder-card">
+                <h3>➕ 添加吃药计划</h3>
+                <div class="field-group">
+                    <label for="medName">药名</label>
+                    <input type="text" id="medName" placeholder="例如：降压药" />
+                </div>
+                <div class="field-group">
+                    <label for="medDose">每次剂量</label>
+                    <input type="text" id="medDose" placeholder="例如：1 片 / 5ml" />
+                </div>
+                <div class="field-group">
+                    <label>服用时间</label>
+                    <div id="timeSlots"></div>
+                    <button class="btn-add-time" id="addTimeBtn">＋ 再加一个时间</button>
+                </div>
+                <button class="btn-primary-lg" id="saveMedBtn">💾 保存计划</button>
+            </div>
+
+            <!-- ===== 我的服药计划 ===== -->
+            <div class="reminder-card">
+                <h3>📋 我的服药计划</h3>
+                <div class="plan-list" id="planList"></div>
+            </div>
+        </div>
     </div>
 
     <!-- ===== 免责声明 ===== -->
     <div class="disclaimer">
         ⚠️ 结果仅供参考，最终以<a href="https://www.nmpa.gov.cn/" target="_blank">国家药监局官网</a>查询为准
+    </div>
+</div>
+
+<!-- ===== 服药提醒浮层 ===== -->
+<div class="pill-alert" id="pillAlert">
+    <div class="pill-box">
+        <div class="pill-icon">💊</div>
+        <h3>该吃药啦！</h3>
+        <p id="pillAlertName"></p>
+        <div class="pill-sub" id="pillAlertDose"></div>
+        <div class="pill-actions">
+            <button class="ok" id="pillOkBtn">✅ 我吃了</button>
+            <button class="later" id="pillLaterBtn">⏰ 过 10 分钟</button>
+        </div>
     </div>
 </div>
 
@@ -675,6 +1062,10 @@
 <!-- ===== Toast 通知 ===== -->
 <div class="toast" id="toast"></div>
 
+<!-- ===== 隐藏的文件选择输入：相机 / 相册 ===== -->
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;" />
+<input type="file" id="galleryFileInput" accept="image/*" style="display:none;" />
+
 <script>
     // ================================================================
     //  核心逻辑 —— 结合 DMXAPI 大模型视觉识别 + 规则引擎 + 语音朗读
@@ -690,6 +1081,29 @@
         const resultActions  = document.getElementById('resultActions');
         const speakBtn       = document.getElementById('speakBtn');
         const photoBtn       = document.getElementById('photoBtn');
+        const galleryBtn     = document.getElementById('galleryBtn');
+        const cameraInput    = document.getElementById('cameraInput');
+        const galleryFileInput = document.getElementById('galleryFileInput');
+
+        // Tab
+        const tabCheck       = document.getElementById('tabCheck');
+        const tabRemind      = document.getElementById('tabRemind');
+        const panelCheck     = document.getElementById('panelCheck');
+        const panelRemind    = document.getElementById('panelRemind');
+
+        // 服药提醒
+        const reminderStatus = document.getElementById('reminderStatus');
+        const medName        = document.getElementById('medName');
+        const medDose        = document.getElementById('medDose');
+        const timeSlots      = document.getElementById('timeSlots');
+        const addTimeBtn     = document.getElementById('addTimeBtn');
+        const saveMedBtn     = document.getElementById('saveMedBtn');
+        const planList       = document.getElementById('planList');
+        const pillAlert      = document.getElementById('pillAlert');
+        const pillAlertName  = document.getElementById('pillAlertName');
+        const pillAlertDose  = document.getElementById('pillAlertDose');
+        const pillOkBtn      = document.getElementById('pillOkBtn');
+        const pillLaterBtn   = document.getElementById('pillLaterBtn');
 
         // 设置
         const settingsIcon    = document.getElementById('settingsIcon');
@@ -1204,6 +1618,231 @@
         }
 
         // =============================================================
+        //  服药提醒模块（数据存 localStorage，纯前端）
+        // =============================================================
+        var MED_PLAN_KEY = 'medicine_plans_v1';
+        var plans = loadPlans();        // [{id, name, dose, times:['08:00',...]}]
+        var currentRemindAction = null; // 当前弹窗对应的计划 id + 时间
+        var remindTimer = null;
+
+        // --- 读取计划 ---
+        function loadPlans() {
+            try {
+                var raw = localStorage.getItem(MED_PLAN_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        // --- 保存计划 ---
+        function savePlans() {
+            try {
+                localStorage.setItem(MED_PLAN_KEY, JSON.stringify(plans));
+            } catch (e) {
+                showToast('保存失败，浏览器存储不可用', 'error');
+            }
+        }
+
+        // --- 添加一个时间输入框（默认补当前下一个整点）---
+        function addTimeInput(value) {
+            var row = document.createElement('div');
+            row.className = 'med-row';
+            var input = document.createElement('input');
+            input.type = 'time';
+            input.value = value || '';
+            var del = document.createElement('button');
+            del.className = 'rm-time';
+            del.type = 'button';
+            del.textContent = '✕';
+            del.addEventListener('click', function() {
+                row.remove();
+            });
+            row.appendChild(input);
+            row.appendChild(del);
+            timeSlots.appendChild(row);
+        }
+
+        // --- 收集当前输入的时间列表 ---
+        function collectTimes() {
+            var inputs = timeSlots.querySelectorAll('input[type="time"]');
+            var times = [];
+            inputs.forEach(function(inp) {
+                if (inp.value) times.push(inp.value);
+            });
+            return times;
+        }
+
+        // --- 渲染计划列表 ---
+        function renderPlans() {
+            planList.innerHTML = '';
+            if (plans.length === 0) {
+                planList.innerHTML = '<div class="plan-empty">还没有吃药计划，先在上面添加吧 👆</div>';
+                return;
+            }
+            plans.forEach(function(p) {
+                var item = document.createElement('div');
+                item.className = 'plan-item';
+                var name = escapeHtml(p.name);
+                var dose = p.dose ? '，每次 ' + escapeHtml(p.dose) : '';
+                var timesHtml = p.times.map(function(t) { return '<span>' + t + '</span>'; }).join('、') || '未设置';
+                item.innerHTML =
+                    '<div class="plan-icon">💊</div>' +
+                    '<div class="plan-info">' +
+                        '<div class="plan-name">' + name + '</div>' +
+                        '<div class="plan-meta">' +
+                            '服用时间：' + timesHtml + dose +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="plan-status">已保存</div>' +
+                    '<button class="plan-del" title="删除">🗑</button>';
+                var delBtn = item.querySelector('.plan-del');
+                delBtn.addEventListener('click', function() {
+                    if (confirm('确定删除「' + p.name + '」这个吃药计划吗？')) {
+                        plans = plans.filter(function(x) { return x.id !== p.id; });
+                        savePlans();
+                        renderPlans();
+                        updateReminderStatus();
+                        showToast('已删除', 'success');
+                    }
+                });
+                planList.appendChild(item);
+            });
+        }
+
+        // --- 保存新计划 ---
+        function saveMedPlan() {
+            var name = medName.value.trim();
+            if (!name) {
+                showToast('请输入药名', 'error');
+                medName.focus();
+                return;
+            }
+            var times = collectTimes();
+            if (times.length === 0) {
+                showToast('请至少添加一个服用时间', 'error');
+                return;
+            }
+            // 去重 + 排序
+            times = times.filter(function(v, i, a) { return a.indexOf(v) === i; }).sort();
+            plans.push({
+                id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+                name: name,
+                dose: medDose.value.trim(),
+                times: times
+            });
+            savePlans();
+            renderPlans();
+            updateReminderStatus();
+            // 清空输入
+            medName.value = '';
+            medDose.value = '';
+            timeSlots.innerHTML = '';
+            addTimeInput(nowPlusOneHour());
+            showToast('✅ 吃药计划已保存', 'success');
+        }
+
+        // --- 工具：下一个整点时间字符串 HH:MM ---
+        function nowPlusOneHour() {
+            var d = new Date(Date.now() + 60 * 60 * 1000);
+            return pad(d.getHours()) + ':' + pad(d.getMinutes());
+        }
+        function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+        // --- 工具：当前时间 HH:MM ---
+        function nowHM() {
+            var d = new Date();
+            return pad(d.getHours()) + ':' + pad(d.getMinutes());
+        }
+
+        // --- 定时检测是否到了服药时间 ---
+        function checkReminders() {
+            // 页面上没开提醒面板时也照常检测
+            var current = nowHM();
+            var todayKey = new Date().toDateString();
+            var lastNotifiedKey = localStorage.getItem('med_last_notified') || '';
+
+            plans.forEach(function(p) {
+                p.times.forEach(function(t) {
+                    if (t === current) {
+                        var key = p.id + '_' + t + '_' + todayKey;
+                        if (lastNotifiedKey !== key) {
+                            localStorage.setItem('med_last_notified', key);
+                            fireReminder(p, t);
+                        }
+                    }
+                });
+            });
+        }
+
+        // --- 触发服药弹窗 + 系统通知 + 语音 ---
+        function fireReminder(plan, time) {
+            currentRemindAction = { id: plan.id, time: time };
+            pillAlertName.textContent = plan.name;
+            pillAlertDose.textContent = plan.dose ? ('每次剂量：' + plan.dose) : '到时间啦，请按时服用';
+            pillAlert.classList.add('show');
+
+            // 浏览器系统通知
+            try {
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('💊 该吃药啦', {
+                        body: '该服用「' + plan.name + '」了' + (plan.dose ? '（' + plan.dose + '）' : '')
+                    });
+                }
+            } catch (e) {}
+
+            // 语音提醒
+            speakText('该吃药啦，请服用' + plan.name + (plan.dose ? '，剂量' + plan.dose : ''));
+        }
+
+        // --- 请求系统通知权限 ---
+        function requestNotifyPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(function() {
+                    updateReminderStatus();
+                });
+            }
+        }
+
+        // --- 更新提醒状态提示条 ---
+        function updateReminderStatus() {
+            var notifOk = !('Notification' in window) || Notification.permission === 'granted';
+            if (plans.length > 0 && notifOk) {
+                reminderStatus.className = 'reminder-enabled';
+                reminderStatus.textContent = '⏰ 吃药提醒已开启，共 ' + plans.length + ' 个计划';
+            } else if (plans.length > 0 && !notifOk) {
+                reminderStatus.className = 'reminder-disabled';
+                reminderStatus.textContent = '🔕 系统通知未开启，到点会在页面内提醒（可点击右上角 ⚙️ 附近开启）';
+            } else {
+                reminderStatus.className = 'reminder-disabled';
+                reminderStatus.textContent = '📭 还没有吃药计划，添加后自动开始提醒';
+            }
+        }
+
+        // --- Tab 切换 ---
+        function switchTab(tab) {
+            if (tab === 'remind') {
+                tabKeep = true;
+                tabCheck.classList.remove('active');
+                tabRemind.classList.add('active');
+                panelCheck.classList.remove('active');
+                panelRemind.classList.add('active');
+                renderPlans();
+                updateReminderStatus();
+                // 首次进入时申请通知权限
+                requestNotifyPermission();
+            } else {
+                tabKeep = false;
+                tabRemind.classList.remove('active');
+                tabCheck.classList.add('active');
+                panelRemind.classList.remove('active');
+                panelCheck.classList.add('active');
+            }
+        }
+
+        var tabKeep = false; // 当前是否停留在提醒页
+
+        // =============================================================
         //  主检查函数（文本输入）
         // =============================================================
         function handleCheck() {
@@ -1279,99 +1918,225 @@
             speakText(text);
         });
 
-        // --- 拍照按钮：动态创建文件输入，唤起系统相机/相册 ---
+        // --- 拍照按钮：唤起后置摄像头 ---
         photoBtn.addEventListener('click', function() {
             if (isAnalyzing) {
                 showToast('正在分析中，请稍候...');
                 return;
             }
-            // 检查 API Key
             if (!getApiKey()) {
                 showToast('请先设置 DMXAPI Key（点击右上角 ⚙️）', 'error', 3500);
                 settingsModal.classList.add('show');
                 apiKeyInput.focus();
                 return;
             }
-            // 动态创建文件输入（避免 HTML 静态元素的兼容问题）
-            var input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.style.position = 'fixed';
-            input.style.top = '-100px';
-            input.style.left = '-100px';
-            input.style.opacity = '0';
-            // 用 once: true 确保 change 只触发一次，且自动清理
-            input.addEventListener('change', function onChange(ev) {
-                var file = input.files && input.files[0];
-                if (!file) { document.body.removeChild(input); return; }
-                // 从 body 移除
-                document.body.removeChild(input);
-                // 用 createObjectURL 立即显示（比 FileReader 快且可靠）
-                var objectUrl = URL.createObjectURL(file);
-                capturedImageData = objectUrl;
-                previewImg.src = objectUrl;
-                previewOverlay.classList.add('show');
-            });
-            document.body.appendChild(input);
-            input.click();
+            // 每次重新赋值 value，确保同一个文件也能再次触发 change
+            cameraInput.value = '';
+            cameraInput.click();
         });
+
+        // --- 相册按钮：打开相册选择 ---
+        galleryBtn.addEventListener('click', function() {
+            if (isAnalyzing) {
+                showToast('正在分析中，请稍候...');
+                return;
+            }
+            if (!getApiKey()) {
+                showToast('请先设置 DMXAPI Key（点击右上角 ⚙️）', 'error', 3500);
+                settingsModal.classList.add('show');
+                apiKeyInput.focus();
+                return;
+            }
+            galleryFileInput.value = '';
+            galleryFileInput.click();
+        });
+
+        // --- 相机拍照结果 ---
+        cameraInput.addEventListener('change', function() {
+            var file = cameraInput.files && cameraInput.files[0];
+            if (!file) return;
+            cameraInput.value = '';
+            handleFileSelected(file, 'camera');
+        });
+
+        // --- 相册选择结果 ---
+        galleryFileInput.addEventListener('change', function() {
+            var file = galleryFileInput.files && galleryFileInput.files[0];
+            if (!file) return;
+            galleryFileInput.value = '';
+            handleFileSelected(file, 'gallery');
+        });
+
+        // =============================================================
+        //  图片选择与方向校正 + 预览
+        // =============================================================
+        // 读取文件 -> 应用 EXIF 方向 -> 统一以 dataURL 展示到预览
+        function handleFileSelected(file, source) {
+            if (!file || !file.type || file.type.indexOf('image/') !== 0) {
+                showToast('请选择图片文件', 'error');
+                return;
+            }
+            // 拒绝明显过大的文件（例如 > 25MB），避免内存问题
+            if (file.size > 25 * 1024 * 1024) {
+                showToast('图片过大，请重新拍摄或选择较小的图片', 'error');
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var dataUrl = e.target.result;
+                // 用 canvas 校正手机照片的 EXIF 旋转，同时统一为 JPEG
+                normalizeImage(dataUrl, function(correctedDataUrl) {
+                    // 清理上一张未提交的 blob/dataUrl（避免内存泄漏）
+                    if (capturedImageData && capturedImageData.indexOf('blob:') === 0) {
+                        URL.revokeObjectURL(capturedImageData);
+                    }
+                    capturedImageData = correctedDataUrl;
+                    previewImg.src = correctedDataUrl;
+                    previewOverlay.classList.add('show');
+                });
+            };
+            reader.onerror = function() {
+                showToast('图片读取失败，请重试', 'error');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 将图片绘制到 canvas 并读取图片方向（EXIF），正确旋转后再导出
+        function normalizeImage(dataUrl, done) {
+            var img = new Image();
+            img.onload = function() {
+                try {
+                    // 读取 EXIF 方向
+                    var orientation = readExifOrientation(dataUrl);
+                    var canvas = document.createElement('canvas');
+                    var ctx = canvas.getContext('2d');
+
+                    // 方向 5-8 需要交换宽高（旋转了 90 度）
+                    var swap = orientation >= 5;
+                    if (swap) {
+                        canvas.width = img.height;
+                        canvas.height = img.width;
+                    } else {
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                    }
+
+                    // 用标准变换矩阵处理 8 种 EXIF 方向（先 transform 后 drawImage）
+                    switch (orientation) {
+                        case 2: ctx.transform(-1, 0, 0, 1, canvas.width, 0); break;                 // 水平翻转
+                        case 3: ctx.transform(-1, 0, 0, -1, canvas.width, canvas.height); break;    // 旋转180
+                        case 4: ctx.transform(1, 0, 0, -1, 0, canvas.height); break;                // 垂直翻转
+                        case 5: ctx.transform(0, 1, 1, 0, 0, 0); break;                            // 转置
+                        case 6: ctx.transform(0, 1, -1, 0, canvas.height, 0); break;                // 顺时针90
+                        case 7: ctx.transform(0, -1, -1, 0, canvas.height, canvas.width); break;    // 横向
+                        case 8: ctx.transform(0, -1, 1, 0, 0, canvas.width); break;                 // 逆时针90
+                        default: break;
+                    }
+
+                    ctx.drawImage(img, 0, 0);
+                    // 输出 JPEG，压缩比例适中；保留一定质量
+                    done(canvas.toDataURL('image/jpeg', 0.9));
+                } catch (err) {
+                    console.error('图片方向处理失败，回退原图:', err);
+                    done(dataUrl);
+                }
+            };
+            img.onerror = function() {
+                showToast('图片无法加载，请重新选择', 'error');
+            };
+            img.src = dataUrl;
+        }
+
+        // 从 dataURL 中提取 EXIF Orientation（简化版，仅取 JPEG APP1 段）
+        function readExifOrientation(dataUrl) {
+            try {
+                var base64 = dataUrl.split(',')[1] || '';
+                var binary = atob(base64);
+                var view = new DataView(new ArrayBuffer(binary.length));
+                for (var i = 0; i < binary.length; i++) view.setUint8(i, binary.charCodeAt(i));
+
+                // JPEG 起始标记
+                if (view.getUint16(0, false) !== 0xFFD8) return 1;
+                var offset = 2;
+                var length = view.byteLength;
+                while (offset < length) {
+                    var marker = view.getUint16(offset, false);
+                    offset += 2;
+                    // SOI 之后的标记
+                    if (marker === 0xFFE1) {
+                        // APP1 段
+                        var segLen = view.getUint16(offset, false);
+                        offset += 2;
+                        var tag = String.fromCharCode(view.getUint8(offset),
+                                                       view.getUint8(offset + 1),
+                                                       view.getUint8(offset + 2),
+                                                       view.getUint8(offset + 3),
+                                                       view.getUint8(offset + 4),
+                                                       view.getUint8(offset + 5));
+                        if (tag === 'Exif\0\0') {
+                            // 定位 TIFF 头
+                            var tiffStart = offset + 6;
+                            var endian = view.getUint16(tiffStart, false);
+                            var little = (endian === 0x4949); // II
+                            // IFD0 偏移
+                            var ifdOffset = view.getUint32(tiffStart + 4, little);
+                            var ifdStart = tiffStart + ifdOffset;
+                            var entries = view.getUint16(ifdStart, little);
+                            for (var e = 0; e < entries; e++) {
+                                var entryStart = ifdStart + 2 + e * 12;
+                                var tagId = view.getUint16(entryStart, little);
+                                if (tagId === 0x0112) { // Orientation
+                                    var orient = view.getUint16(entryStart + 8, little);
+                                    return orient || 1;
+                                }
+                            }
+                        }
+                        offset += segLen - 2;
+                    } else if ((marker & 0xFF00) === 0xFF00) {
+                        // 其他段，跳过长度
+                        var scanLen = view.getUint16(offset, false);
+                        offset += scanLen;
+                    } else {
+                        break;
+                    }
+                }
+            } catch (e) {
+                // 解析失败返回默认方向
+            }
+            return 1;
+        }
 
         // --- 预览页面：关闭 ---
         previewCloseBtn.addEventListener('click', function() {
             previewOverlay.classList.remove('show');
-            if (capturedImageData && capturedImageData.startsWith('blob:')) {
-                URL.revokeObjectURL(capturedImageData);
-            }
             capturedImageData = null;
         });
 
         // --- 预览页面：重拍 ---
         retakeBtn.addEventListener('click', function() {
             previewOverlay.classList.remove('show');
-            if (capturedImageData && capturedImageData.startsWith('blob:')) {
-                URL.revokeObjectURL(capturedImageData);
-            }
             capturedImageData = null;
-            // 重新触发拍照
-            photoBtn.click();
+            // 直接重新唤起相机
+            if (getApiKey()) {
+                cameraInput.value = '';
+                cameraInput.click();
+            } else {
+                showToast('请先设置 DMXAPI Key（点击右上角 ⚙️）', 'error', 3500);
+                settingsModal.classList.add('show');
+                apiKeyInput.focus();
+            }
         });
 
         // --- 预览页面：确认识别 ---
         confirmPhotoBtn.addEventListener('click', function() {
-            var src = previewImg.src;
+            var dataUrl = capturedImageData;
             previewOverlay.classList.remove('show');
-            if (!src || src === '') {
+            if (!dataUrl || dataUrl === '') {
                 showToast('请先拍摄或选择照片', 'error');
                 return;
             }
-            // blob URL 需要转成 dataURL 才能发给 API
-            if (src.startsWith('blob:')) {
-                var oldUrl = capturedImageData;
-                loadingOverlay.classList.add('show');
-                loadingText.textContent = '⏳ 正在处理...';
-                loadingSub.textContent = '转换图片格式，请稍候';
-                var img = new Image();
-                img.onload = function() {
-                    var canvas = document.createElement('canvas');
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    var ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0);
-                    var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-                    if (oldUrl && oldUrl.startsWith('blob:')) URL.revokeObjectURL(oldUrl);
-                    capturedImageData = dataUrl;
-                    loadingOverlay.classList.remove('show');
-                    handlePhotoCapture(dataUrl);
-                };
-                img.onerror = function() {
-                    loadingOverlay.classList.remove('show');
-                    showToast('图片处理失败，请重新选择', 'error');
-                };
-                img.src = src;
-            } else {
-                capturedImageData = src;
-                handlePhotoCapture(src);
-            }
+            handlePhotoCapture(dataUrl);
         });
 
         // --- 设置面板事件 ---
@@ -1424,10 +2189,59 @@
         // --- 加载保存的 API Key ---
         loadApiKey();
 
+        // =============================================================
+        //  服药提醒：事件绑定与初始化
+        // =============================================================
+        tabCheck.addEventListener('click', function() { switchTab('check'); });
+        tabRemind.addEventListener('click', function() { switchTab('remind'); });
+
+        addTimeBtn.addEventListener('click', function() {
+            addTimeInput('');
+        });
+        saveMedBtn.addEventListener('click', saveMedPlan);
+
+        // 吃药弹窗按钮
+        pillOkBtn.addEventListener('click', function() {
+            pillAlert.classList.remove('show');
+            if (currentRemindAction) {
+                // 记录该时段已完成（更新 med_last_notified 已在上方 setItem）
+                showToast('✅ 记得按时吃药哦', 'success');
+            }
+            currentRemindAction = null;
+        });
+        pillLaterBtn.addEventListener('click', function() {
+            pillAlert.classList.remove('show');
+            // 10 分钟后再次提醒：记录一个临时 key，并设置一次性定时器
+            if (currentRemindAction) {
+                var id = currentRemindAction.id;
+                var plan = plans.find(function(p) { return p.id === id; });
+                if (plan) {
+                    var t = nowHM();
+                    showToast('⏰ 好的，10 分钟后再提醒你');
+                    setTimeout(function() {
+                        fireReminder(plan, t);
+                    }, 10 * 60 * 1000);
+                }
+            }
+            currentRemindAction = null;
+        });
+
+        // 点击弹窗背景不关闭（避免误触），仅用按钮操作
+
+        // 默认给一个时间框，预填下一整点
+        addTimeInput(nowPlusOneHour());
+        renderPlans();
+        updateReminderStatus();
+
+        // 每 15 秒检测一次是否到点（跨过整分钟边界也能及时提醒）
+        if (remindTimer) clearInterval(remindTimer);
+        remindTimer = setInterval(checkReminders, 15000);
+        checkReminders();
+
         // --- 焦点 ---
         inputEl.focus();
 
-        console.log('💊 药安全 v2 已加载（DMXAPI 大模型视觉识别 + 规则引擎 + 语音朗读）');
+        console.log('💊 药安全 v2 已加载（查药鉴别 + 服药提醒 + 语音朗读）');
     })();
 </script>
 
