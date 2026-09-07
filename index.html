@@ -1023,14 +1023,11 @@
 <div class="modal-overlay" id="settingsModal">
     <div class="modal-box">
         <h2>⚙️ API 设置</h2>
-        <p>输入你的 DMXAPI Key 以启用拍照识别功能。<br>Key 仅保存在本地浏览器中。</p>
-        <label for="apiKeyInput">DMXAPI Key</label>
-        <input type="password" id="apiKeyInput" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
-        <a class="api-link" href="https://www.dmxapi.cn/" target="_blank">🔑 如何获取 DMXAPI Key？</a>
+        <p>当前使用 Vercel 云端统一 API。密钥仅保存在服务端环境变量中，不会出现在浏览器或网络请求中。</p>
+        <div class="reminder-enabled" id="apiStatus">✅ 云端 API 已接入</div>
         <div class="modal-actions">
-            <button class="btn-primary" id="saveApiKeyBtn">💾 保存</button>
+            <button class="btn-primary" id="testApiBtn">🔌 测试连接</button>
             <button class="btn-secondary" id="closeSettingsBtn">取消</button>
-            <button class="btn-danger" id="clearApiKeyBtn">清除</button>
         </div>
     </div>
 </div>
@@ -1108,10 +1105,9 @@
         // 设置
         const settingsIcon    = document.getElementById('settingsIcon');
         const settingsModal   = document.getElementById('settingsModal');
-        const apiKeyInput     = document.getElementById('apiKeyInput');
-        const saveApiKeyBtn   = document.getElementById('saveApiKeyBtn');
+        const apiStatus       = document.getElementById('apiStatus');
+        const testApiBtn      = document.getElementById('testApiBtn');
         const closeSettingsBtn = document.getElementById('closeSettingsBtn');
-        const clearApiKeyBtn  = document.getElementById('clearApiKeyBtn');
 
         // 预览
         const previewOverlay  = document.getElementById('previewOverlay');
@@ -1150,29 +1146,6 @@
         }
 
         // =============================================================
-        //  API Key 管理
-        // =============================================================
-        function loadApiKey() {
-            var key = localStorage.getItem('dmxapi_key') || '';
-            apiKeyInput.value = key;
-            return key;
-        }
-
-        function saveApiKey(key) {
-            if (key && key.trim()) {
-                localStorage.setItem('dmxapi_key', key.trim());
-                showToast('✅ API Key 已保存', 'success');
-            } else {
-                localStorage.removeItem('dmxapi_key');
-                showToast('已清除 API Key');
-            }
-        }
-
-        function getApiKey() {
-            return localStorage.getItem('dmxapi_key') || '';
-        }
-
-        // =============================================================
         //  图片压缩（发送 API 前缩小尺寸）
         // =============================================================
         function resizeImage(dataUrl, maxSize) {
@@ -1208,11 +1181,6 @@
         //  DMXAPI 大模型调用 —— 识别药盒文字
         // =============================================================
         async function callDMXAPIOCR(imageDataUrl) {
-            var apiKey = getApiKey();
-            if (!apiKey) {
-                throw new Error('请先设置 DMXAPI Key（点击右上角 ⚙️）');
-            }
-
             // 从 data URL 中提取 base64 数据
             var base64Data = imageDataUrl.split(',')[1];
             var mimeType = imageDataUrl.match(/^data:(image\/\w+);/);
@@ -1249,11 +1217,10 @@
                 response_format: { type: 'json_object' }
             };
 
-            var resp = await fetch('https://www.dmxapi.cn/v1/chat/completions', {
+            var resp = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + apiKey
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(payload)
             });
@@ -1264,7 +1231,7 @@
                     var errData = await resp.json();
                     errMsg = errData.error && errData.error.message ? errData.error.message : '';
                 } catch(e) {}
-                throw new Error('DMXAPI 错误 (' + resp.status + '): ' + (errMsg || resp.statusText));
+                throw new Error('云端 API 错误 (' + resp.status + '): ' + (errMsg || resp.statusText));
             }
 
             var data = await resp.json();
@@ -1924,12 +1891,6 @@
                 showToast('正在分析中，请稍候...');
                 return;
             }
-            if (!getApiKey()) {
-                showToast('请先设置 DMXAPI Key（点击右上角 ⚙️）', 'error', 3500);
-                settingsModal.classList.add('show');
-                apiKeyInput.focus();
-                return;
-            }
             // 每次重新赋值 value，确保同一个文件也能再次触发 change
             cameraInput.value = '';
             cameraInput.click();
@@ -1939,12 +1900,6 @@
         galleryBtn.addEventListener('click', function() {
             if (isAnalyzing) {
                 showToast('正在分析中，请稍候...');
-                return;
-            }
-            if (!getApiKey()) {
-                showToast('请先设置 DMXAPI Key（点击右上角 ⚙️）', 'error', 3500);
-                settingsModal.classList.add('show');
-                apiKeyInput.focus();
                 return;
             }
             galleryFileInput.value = '';
@@ -2118,14 +2073,8 @@
             previewOverlay.classList.remove('show');
             capturedImageData = null;
             // 直接重新唤起相机
-            if (getApiKey()) {
-                cameraInput.value = '';
-                cameraInput.click();
-            } else {
-                showToast('请先设置 DMXAPI Key（点击右上角 ⚙️）', 'error', 3500);
-                settingsModal.classList.add('show');
-                apiKeyInput.focus();
-            }
+            cameraInput.value = '';
+            cameraInput.click();
         });
 
         // --- 预览页面：确认识别 ---
@@ -2141,7 +2090,6 @@
 
         // --- 设置面板事件 ---
         settingsIcon.addEventListener('click', function() {
-            loadApiKey();
             settingsModal.classList.add('show');
         });
 
@@ -2149,25 +2097,29 @@
             settingsModal.classList.remove('show');
         });
 
-        saveApiKeyBtn.addEventListener('click', function() {
-            var key = apiKeyInput.value.trim();
-            if (!key) {
-                showToast('请输入 API Key', 'error');
-                return;
-            }
-            if (!key.startsWith('sk-')) {
-                showToast('Key 格式似乎不对，应以 sk- 开头', 'error');
-                return;
-            }
-            saveApiKey(key);
-            settingsModal.classList.remove('show');
-        });
-
-        clearApiKeyBtn.addEventListener('click', function() {
-            if (confirm('确定要清除已保存的 API Key 吗？')) {
-                saveApiKey('');
-                apiKeyInput.value = '';
-                settingsModal.classList.remove('show');
+        testApiBtn.addEventListener('click', async function() {
+            testApiBtn.disabled = true;
+            apiStatus.className = 'reminder-disabled';
+            apiStatus.textContent = '⏳ 正在测试云端连接...';
+            try {
+                var response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'health' })
+                });
+                var data = await response.json();
+                if (!response.ok || !data.ok) {
+                    throw new Error(data.error || '云端 API 暂不可用');
+                }
+                apiStatus.className = 'reminder-enabled';
+                apiStatus.textContent = '✅ 云端 API 连接正常';
+                showToast('✅ 云端 API 连接正常', 'success');
+            } catch (err) {
+                apiStatus.className = 'reminder-disabled';
+                apiStatus.textContent = '❌ 云端 API 连接失败';
+                showToast('❌ ' + (err.message || '连接测试失败'), 'error', 4000);
+            } finally {
+                testApiBtn.disabled = false;
             }
         });
 
@@ -2185,9 +2137,6 @@
                 window.speechSynthesis.getVoices();
             };
         }
-
-        // --- 加载保存的 API Key ---
-        loadApiKey();
 
         // =============================================================
         //  服药提醒：事件绑定与初始化
