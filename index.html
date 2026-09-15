@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+<html lang="zh-CN" data-page-node-id="AGhqSK3hePQ0TQFe4vDcim">
+<head data-page-node-id="E2iwuivoxBF3VzPI4BwtzB">
+    <meta charset="UTF-8" data-page-node-id="fTvP7hn0gRKFdNVnXrlNxa" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" data-page-node-id="lBKpcCgjahE4VVEU4lZaB5" />
     <title>药安全 · 查药助手</title>
     <style>
         /* ===== 全局重置 & 适老化基础 ===== */
@@ -903,165 +903,420 @@
             line-height: 1.5;
         }
 
+        /* ============================================================
+           【新增】登录方式
+           ============================================================ */
+        .login-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .lm {
+            padding: 16px;
+            font-size: 22px;
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            color: #fff;
+            transition: filter 0.2s, transform 0.1s;
+            letter-spacing: 1px;
+        }
+        .lm:active { transform: scale(0.97); }
+        .lm:hover { filter: brightness(1.08); }
+        .lm-wechat { background: #07c160; }
+        .lm-alipay { background: #1677ff; }
+        .lm-phone  { background: #0a7e3d; }
+
+        .field-group select {
+            width: 100%;
+            padding: 15px 16px;
+            font-size: 22px;
+            border: 2px solid #ccd7e6;
+            border-radius: 14px;
+            background: #fafcff;
+            outline: none;
+            transition: border 0.2s;
+            box-sizing: border-box;
+            color: #1a1a1a;
+        }
+        .field-group select:focus { border-color: #0a7e3d; }
+
+        /* ============================================================
+           【新增】家人共享
+           ============================================================ */
+        .member-card {
+            background: #fff;
+            border: 2px solid #e3e9f1;
+            border-radius: 18px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .member-card .m-avatar { font-size: 38px; flex-shrink: 0; line-height: 1.2; }
+        .member-card .m-info { flex: 1; min-width: 0; }
+        .member-card .m-name { font-size: 23px; font-weight: 700; }
+        .member-card .m-meta { font-size: 16px; color: #666; margin-top: 2px; line-height: 1.4; }
+        .member-card .m-care {
+            border: none;
+            background: #fdeef2;
+            color: #d6336c;
+            font-size: 17px;
+            font-weight: 600;
+            padding: 10px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .member-card .m-care:active { transform: scale(0.95); }
+        .member-card .m-del {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: none;
+            background: #fde8e8;
+            color: #b22222;
+            font-size: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .feed-list { display: flex; flex-direction: column; gap: 8px; }
+        .feed-item {
+            background: #f8f9fc;
+            border: 1px solid #eef1f6;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 18px;
+            color: #444;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .feed-item .feed-time {
+            font-size: 14px;
+            color: #999;
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+
+        /* ============================================================
+           【新增】药品分类与适龄提示
+           ============================================================ */
+        .classify-card {
+            margin-top: 12px;
+            width: 100%;
+            text-align: left;
+            background: rgba(255,255,255,0.75);
+            border: 1px solid #e0e0e0;
+            border-radius: 14px;
+            padding: 14px 16px;
+        }
+        .classify-card h4 { font-size: 20px; margin-bottom: 10px; }
+        .cat-chip {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 8px 8px 0;
+            white-space: nowrap;
+        }
+        .cat-chip.cat-red    { background: #fde8e8; color: #b22222; }
+        .cat-chip.cat-orange { background: #fef0e0; color: #b05c00; }
+        .cat-chip.cat-green  { background: #e6f5ed; color: #0a7e3d; }
+        .cat-chip.cat-blue   { background: #e9f2fb; color: #2c6b9e; }
+        .age-warn {
+            font-size: 18px;
+            color: #b22222;
+            background: #fde8e8;
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+        .age-warn.yellow { color: #b68b00; background: #fef7e0; }
+        .cat-tips { font-size: 18px; color: #444; line-height: 1.6; padding-left: 4px; }
+        .cat-tips li { margin: 0 0 6px 24px; }
+
         /* 小屏适配补充 */
         @media (max-width: 420px) {
             .top-tabs button { font-size: 19px; padding: 12px 4px; }
             .photo-actions button { font-size: 19px; }
             .plan-item .plan-name { font-size: 21px; }
             .field-group input { font-size: 20px; padding: 13px; }
+            .member-card .m-name { font-size: 20px; }
+            .lm { font-size: 20px; padding: 14px; }
         }
     </style>
 </head>
-<body>
+<body data-page-node-id="GG7Huod8IsKfLT0R69mc8Y">
 
-<div class="app-container">
+<div class="app-container" data-page-node-id="MRp5TE7oqMSwOLAf3smymw">
 
     <!-- ===== 头部 ===== -->
-    <div class="header">
-        <h1>💊 药安全</h1>
-        <p>鉴别真伪 · 按时吃药</p>
-        <button class="settings-icon" id="settingsIcon" title="API 设置">⚙️</button>
+    <div class="header" data-page-node-id="pW41aT48i8CTnilpvPBDy9">
+        <h1 data-page-node-id="DEJZ5iFN28aGrjLQMP6Gt3">💊 药安全</h1>
+        <p id="headerSub" data-page-node-id="mHBTjmLEQTkuoix8E6a5PA">鉴别真伪 · 按时吃药</p>
+        <button class="settings-icon" id="loginIcon" title="登录 / 注册" style="right:48px;" data-page-node-id="kvoWAgBufOBtfFMknpGm5z">👤</button>
+        <button class="settings-icon" id="settingsIcon" title="API 设置" data-page-node-id="yXUxY8f04FEQcjGwT4RGIN">⚙️</button>
     </div>
 
     <!-- ===== 顶部功能导航 ===== -->
-    <div class="top-tabs">
-        <button id="tabCheck" class="active">🔍 查药</button>
-        <button id="tabRemind">⏰ 吃药提醒</button>
+    <div class="top-tabs" data-page-node-id="CsZ2AHZ10HP9FRinHuwwCG">
+        <button id="tabCheck" class="active" data-page-node-id="zl9EhS6a9y1IDNM1yaLhfd">🔍 查药</button>
+        <button id="tabRemind" data-page-node-id="PFmhV4KYkejCuDk6WCSJOV">⏰ 吃药提醒</button>
+        <button id="tabFamily" data-page-node-id="M7GufDuBDHaOujbo1M6IYZ">👪 家人共享</button>
     </div>
 
     <!-- ===================================================== -->
     <!--  面板 1：查药 / 鉴别真伪                               -->
     <!-- ===================================================== -->
-    <div class="panel active" id="panelCheck">
+    <div class="panel active" id="panelCheck" data-page-node-id="rdLvBmXt1M9Eo6sAReNZKA">
 
         <!-- ===== 输入区 ===== -->
-        <div class="input-section">
-            <label for="drugInput">🔍 输入文号</label>
-            <div class="input-row">
-                <input type="text" id="drugInput" placeholder="例如：国药准字H10983027" />
-                <button id="checkBtn">查 验</button>
+        <div class="input-section" data-page-node-id="ajkIzAtSJPLDcPYJMXxmkN">
+            <label for="drugInput" data-page-node-id="2ehYWa20yjpAhnxbwJ57ct">🔍 输入文号</label>
+            <div class="input-row" data-page-node-id="Raexf9fzlKJtlXrjHhHBJw">
+                <input type="text" id="drugInput" placeholder="例如：国药准字H10983027" data-page-node-id="HD1HGiO4VJkMdNwXCWMcFf" />
+                <button id="checkBtn" data-page-node-id="COcHJHkBmN357xukvteBP8">查 验</button>
             </div>
 
-            <div class="quick-actions">
-                <span class="hint">📸 也可以拍照药盒，AI 自动识别并分析安全性</span>
+            <!-- 为谁查药：不同年龄用药提示不同 -->
+            <div class="field-group" style="margin-top:14px;" data-page-node-id="2OLqj2rPNUSQJpi0lk8bKs">
+                <label for="checkAge" data-page-node-id="sXiEbR0FuIWR0FV4lvIAa0">👤 为谁查药（不同年龄，提示不同）</label>
+                <select id="checkAge" data-page-node-id="QMmaqGqlhyNeEqnBP6jQy7">
+                    <option value="adult" selected data-page-node-id="BcjRKWUUFLv893jYdu8dNA">成人（18-59岁）</option>
+                    <option value="child" data-page-node-id="V0M9tQw5AemILKGrxngvlZ">儿童（0-12岁）</option>
+                    <option value="teen" data-page-node-id="NZHLZrKzTByJDRb7VwEUlI">青少年（13-17岁）</option>
+                    <option value="senior" data-page-node-id="3CIdwbCJJEKmTb5eea39QH">老年人（60岁以上）</option>
+                </select>
+            </div>
+
+            <div class="quick-actions" data-page-node-id="elKqjLFgroNCdYhd4Ijicw">
+                <span class="hint" data-page-node-id="BjSEb9Zv4IaiC48nF6jOpu">📸 也可以拍照药盒，AI 自动识别并分析安全性</span>
             </div>
 
             <!-- 拍照 / 相册 两个入口 -->
-            <div class="photo-actions">
-                <button class="btn-camera" id="photoBtn">📸 相机拍照</button>
-                <button class="btn-gallery" id="galleryBtn">🖼️ 从相册选</button>
+            <div class="photo-actions" data-page-node-id="PCUGMrABD2uXBA2lSGzws3">
+                <button class="btn-camera" id="photoBtn" data-page-node-id="V6MvDBtvLwJqOTLnAPqtg8">📸 相机拍照</button>
+                <button class="btn-gallery" id="galleryBtn" data-page-node-id="FuRFiRRmiC7uA0tCyTbxRW">🖼️ 从相册选</button>
             </div>
         </div>
 
         <!-- ===== 结果展示 ===== -->
-        <div class="result-area" id="resultArea">
-            <span class="placeholder">👆 输入文号或拍照识别</span>
+        <div class="result-area" id="resultArea" data-page-node-id="fLXzEqZsMKpDCTRMwBZcZb">
+            <span class="placeholder" data-page-node-id="1xhNqVt5L1yhpUnPKbcK9A">👆 输入文号或拍照识别</span>
         </div>
 
         <!-- ===== 朗读按钮 ===== -->
-        <div class="result-actions" id="resultActions">
-            <button class="speak-btn" id="speakBtn">🔊 朗读结果</button>
+        <div class="result-actions" id="resultActions" data-page-node-id="hdX2Qi5dHbw7fOozDRZQzL">
+            <button class="speak-btn" id="speakBtn" data-page-node-id="59HVdkTDZSf9sjVP3Dg5oA">🔊 朗读结果</button>
         </div>
     </div>
 
     <!-- ===================================================== -->
     <!--  面板 2：按时吃药提醒                                 -->
     <!-- ===================================================== -->
-    <div class="panel" id="panelRemind">
-        <div class="reminder-section">
+    <div class="panel" id="panelRemind" data-page-node-id="6DpLVzGmLfQ40SmzNLWFgV">
+        <div class="reminder-section" data-page-node-id="CDQXoMDV4NkUeaH6DpFCIV">
 
-            <div class="reminder-enabled" id="reminderStatus">⏰ 吃药提醒已开启</div>
+            <div class="reminder-enabled" id="reminderStatus" data-page-node-id="NmgGksMpQmJ36kloVWTRBn">⏰ 吃药提醒已开启</div>
 
             <!-- ===== 新增服药计划 ===== -->
-            <div class="reminder-card">
-                <h3>➕ 添加吃药计划</h3>
-                <div class="field-group">
-                    <label for="medName">药名</label>
-                    <input type="text" id="medName" placeholder="例如：降压药" />
+            <div class="reminder-card" data-page-node-id="yT2meQnFJZivU1BP7wTUPr">
+                <h3 data-page-node-id="CVtM4nrmF4VTA2eQLqIlos">➕ 添加吃药计划</h3>
+                <div class="field-group" data-page-node-id="WCO7qcTSBTqhNnfSIdCTGW">
+                    <label for="medName" data-page-node-id="Z89Knk8YUF0ue1BskBgfWK">药名</label>
+                    <input type="text" id="medName" placeholder="例如：降压药" data-page-node-id="8BtQWRUPxtLXDo7JzMaB0T" />
                 </div>
-                <div class="field-group">
-                    <label for="medDose">每次剂量</label>
-                    <input type="text" id="medDose" placeholder="例如：1 片 / 5ml" />
+                <div class="field-group" data-page-node-id="2zeK0ORkomvdSnveVy3y0h">
+                    <label for="medDose" data-page-node-id="SZnkFs6bU9RRNSBJ24RmJ0">每次剂量</label>
+                    <input type="text" id="medDose" placeholder="例如：1 片 / 5ml" data-page-node-id="hlYg1NSzOnWbyznY3zfULQ" />
                 </div>
-                <div class="field-group">
-                    <label>服用时间</label>
-                    <div id="timeSlots"></div>
-                    <button class="btn-add-time" id="addTimeBtn">＋ 再加一个时间</button>
+                <div class="field-group" data-page-node-id="pSFqgMGSuL1VJbLZyRKeMG">
+                    <label for="medMember" data-page-node-id="fEKJh5ErzfM3S4sYRpGJC5">👤 谁服用（可与家人共享）</label>
+                    <select id="medMember" data-page-node-id="cV3FmesG6JvmQK6JoDuaLa"></select>
                 </div>
-                <button class="btn-primary-lg" id="saveMedBtn">💾 保存计划</button>
+                <div class="field-group" data-page-node-id="Hir2jzH8AGGmkdP5bFtDg9">
+                    <label data-page-node-id="9xO7fgeEkoafpxlGfOtPPF">服用时间</label>
+                    <div id="timeSlots" data-page-node-id="ZsR6ns9by1KO4qQuXrZqYj"></div>
+                    <button class="btn-add-time" id="addTimeBtn" data-page-node-id="rfWhmE1xYlAlV0bmpgMCfi">＋ 再加一个时间</button>
+                </div>
+                <button class="btn-primary-lg" id="saveMedBtn" data-page-node-id="zmg6ZxQ35crD7jr0WL9b0B">💾 保存计划</button>
             </div>
 
             <!-- ===== 我的服药计划 ===== -->
-            <div class="reminder-card">
-                <h3>📋 我的服药计划</h3>
-                <div class="plan-list" id="planList"></div>
+            <div class="reminder-card" data-page-node-id="BVPsv3gMGDQO1d1r86upJq">
+                <h3 data-page-node-id="AzPpHTErDXCgXhOU6dwQcA">📋 我的服药计划</h3>
+                <div class="plan-list" id="planList" data-page-node-id="PkQ1UB7BKkQqD7FEtBfzWw"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================== -->
+    <!--  面板 3：家人共享 / 相互提醒 / 相互关怀                -->
+    <!-- ===================================================== -->
+    <div class="panel" id="panelFamily" data-page-node-id="eWclh4lSiUligQ2hNXDrYY">
+        <div class="reminder-section" data-page-node-id="VROIjZ0K6RK7sOd2ETWt5A">
+
+            <div class="reminder-disabled" id="familyShareStatus" data-page-node-id="G3cY01keHTOle3gADFDEje">🔐 尚未登录，登录后可与家人共享数据</div>
+
+            <!-- ===== 添加家人 ===== -->
+            <div class="reminder-card" data-page-node-id="vr6EbCANHyrMC4XKtljp48">
+                <h3 data-page-node-id="LGXMczmIkHC4lESwq9dALw">➕ 添加家人（最多 5 位）</h3>
+                <div class="field-group" data-page-node-id="6k2EZOoy6QOx3fas5M8Bk4">
+                    <label for="famName" data-page-node-id="27NCXke8II911kvR29MCPQ">称呼</label>
+                    <input type="text" id="famName" placeholder="例如：妈妈 / 小宝" data-page-node-id="wMkfnj6aW9i9kkqVZnYpxW" />
+                </div>
+                <div class="field-group" data-page-node-id="hkTV12qijabbT0fI1FbN6U">
+                    <label for="famRelation" data-page-node-id="PIE2onzeU2cc5iMZsyEW7D">关系</label>
+                    <select id="famRelation" data-page-node-id="PcaInEdkkzbPJafz213sJr">
+                        <option value="爸爸" data-page-node-id="T9KG1i45fg96YxmjzxKYuF">爸爸</option>
+                        <option value="妈妈" data-page-node-id="9QPbBpAsAu9tqJCAssAVAT">妈妈</option>
+                        <option value="爱人" data-page-node-id="qREUD1eyha9W040VjIFvUi">爱人</option>
+                        <option value="儿子" data-page-node-id="AWWIEWZqJ5YubMfvShSAYK">儿子</option>
+                        <option value="女儿" data-page-node-id="fp3Kh3A5y9ODpfJq3fIw9T">女儿</option>
+                        <option value="爷爷" data-page-node-id="3CldoTpT3j2A6INB0UY4OO">爷爷</option>
+                        <option value="奶奶" data-page-node-id="9IkjApC2JtwOesgKGyn6ro">奶奶</option>
+                        <option value="外公" data-page-node-id="FU9WFD9B0VMC3WwsF8vBEK">外公</option>
+                        <option value="外婆" data-page-node-id="XTMTJ1P8FT4NITPUyt0mGV">外婆</option>
+                        <option value="其他" data-page-node-id="lOxNM911uHST97g5a6oUMs">其他亲人</option>
+                    </select>
+                </div>
+                <div class="field-group" data-page-node-id="SIrGYtOhtbRD7dltAOiqh2">
+                    <label for="famAge" data-page-node-id="OoT1HvjhanCV9UDFatXR9a">年龄段（用于用药安全提示）</label>
+                    <select id="famAge" data-page-node-id="IQ0IL2zNrgtgtANhvgwth0">
+                        <option value="child" data-page-node-id="g4kvThkwIrVdXTO2oFEiuI">儿童（0-12岁）</option>
+                        <option value="teen" data-page-node-id="kyEq2quEIkrlwbMKGcvCbi">青少年（13-17岁）</option>
+                        <option value="adult" selected data-page-node-id="Pqv35e43k5nKYLEShUMbTt">成人（18-59岁）</option>
+                        <option value="senior" data-page-node-id="jyJEkr8Nm7qjFY6YKpM9zD">老年人（60岁以上）</option>
+                    </select>
+                </div>
+                <button class="btn-primary-lg" id="addFamBtn" data-page-node-id="qbV2YBDP92olOY7S8fZUoZ">👪 添加家人</button>
+            </div>
+
+            <!-- ===== 家人列表 ===== -->
+            <div class="reminder-card" data-page-node-id="Y8JRiNjkfXbleXSYlOJSGj">
+                <h3 data-page-node-id="uGz56OYNHl8y0En7Fo1Icl">👨‍👩‍👧 我的家人</h3>
+                <div id="famList" data-page-node-id="5N26jy73OJi5EVwpiv9qJG"></div>
+            </div>
+
+            <!-- ===== 家人动态 ===== -->
+            <div class="reminder-card" data-page-node-id="rqQfN0RBhNbx9282OYsfxy">
+                <h3 data-page-node-id="YKbHScb12fDoewVEAKyNdf">🔔 家人动态 · 相互关怀</h3>
+                <div class="feed-list" id="feedList" data-page-node-id="KITNRjXynPDe0Nq34cTncz"></div>
             </div>
         </div>
     </div>
 
     <!-- ===== 免责声明 ===== -->
-    <div class="disclaimer">
-        ⚠️ 结果仅供参考，最终以<a href="https://www.nmpa.gov.cn/" target="_blank">国家药监局官网</a>查询为准
+    <div class="disclaimer" data-page-node-id="f0PzUHBZqjUBAP1s42ZRrl">
+        ⚠️ 结果仅供参考，最终以<a href="https://www.nmpa.gov.cn/" target="_blank" data-page-node-id="6sKlImQ7FpTLYq5zOpPqYD">国家药监局官网</a>查询为准
     </div>
 </div>
 
 <!-- ===== 服药提醒浮层 ===== -->
-<div class="pill-alert" id="pillAlert">
-    <div class="pill-box">
-        <div class="pill-icon">💊</div>
-        <h3>该吃药啦！</h3>
-        <p id="pillAlertName"></p>
-        <div class="pill-sub" id="pillAlertDose"></div>
-        <div class="pill-actions">
-            <button class="ok" id="pillOkBtn">✅ 我吃了</button>
-            <button class="later" id="pillLaterBtn">⏰ 过 10 分钟</button>
+<div class="pill-alert" id="pillAlert" data-page-node-id="bighzemAUq35KpRB7xoC3B">
+    <div class="pill-box" data-page-node-id="i4YXny8e4kSjyOlL5RAUnN">
+        <div class="pill-icon" data-page-node-id="EvQImCB3QMUC1rcRQyNEvz">💊</div>
+        <h3 data-page-node-id="AtuGdfVcN4vaQWx9Z0sdK1">该吃药啦！</h3>
+        <p id="pillAlertName" data-page-node-id="MRVEV0UFA7XzQep0QJBjN4"></p>
+        <div class="pill-sub" id="pillAlertDose" data-page-node-id="zX89d71WAe7pFOpqja3PiM"></div>
+        <div class="pill-actions" data-page-node-id="DFqaOtjA0a82TeRO8mtD5M">
+            <button class="ok" id="pillOkBtn" data-page-node-id="a4dw78XrP5znriRfERvNPv">✅ 我吃了</button>
+            <button class="later" id="pillLaterBtn" data-page-node-id="pevxTIqwCO8bdWDBIhQMj8">⏰ 过 10 分钟</button>
         </div>
     </div>
 </div>
 
 <!-- ===== 设置面板 ===== -->
-<div class="modal-overlay" id="settingsModal">
-    <div class="modal-box">
-        <h2>⚙️ API 设置</h2>
-        <p>当前使用 Vercel 云端统一 API。密钥仅保存在服务端环境变量中，不会出现在浏览器或网络请求中。</p>
-        <div class="reminder-enabled" id="apiStatus">✅ 云端 API 已接入</div>
-        <div class="modal-actions">
-            <button class="btn-primary" id="testApiBtn">🔌 测试连接</button>
-            <button class="btn-secondary" id="closeSettingsBtn">取消</button>
+<div class="modal-overlay" id="settingsModal" data-page-node-id="adQ7DWKT1pCjpvkHCrS8EP">
+    <div class="modal-box" data-page-node-id="J2ABNLxx5QPzBpgcIT0HkI">
+        <h2 data-page-node-id="MWySrxpvet4sAqTtXaJH2O">⚙️ API 设置</h2>
+        <p data-page-node-id="ieEg7MLGpF3yWzCLEkmAfw">当前使用 Vercel 云端统一 API。密钥仅保存在服务端环境变量中，不会出现在浏览器或网络请求中。</p>
+        <div class="reminder-enabled" id="apiStatus" data-page-node-id="zK2Cx0CaG3HCEM5XA7UQna">✅ 云端 API 已接入</div>
+        <div class="modal-actions" data-page-node-id="7xr6Lj9dI8ga2tNALhvKy5">
+            <button class="btn-primary" id="testApiBtn" data-page-node-id="EkcbSYG8wrk8H2ZYYlHWkY">🔌 测试连接</button>
+            <button class="btn-secondary" id="closeSettingsBtn" data-page-node-id="mV4GioCX4ZK9QnlfSo8EHD">取消</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 登录面板（多种登录方式） ===== -->
+<div class="modal-overlay" id="loginModal" data-page-node-id="CvXDLlMe0VF1xZ3Gg9VE7Y">
+    <div class="modal-box" data-page-node-id="Z9T8iiF3FffR2Aznop2S4e">
+        <h2 data-page-node-id="gkgdRgDFh6WJ26XoolNBuf">👋 登录药安全</h2>
+        <p data-page-node-id="bnIBdK6FHzCPrw41HuC6QL">登录后可与家人共享吃药提醒、动态与关怀</p>
+        <div id="loginHome" data-page-node-id="FV9rIJHQ0vh0Kd7qKVNqPG">
+            <div class="login-methods" data-page-node-id="k1H38oZdn5AnmeYHBTgzDn">
+                <button class="lm lm-wechat" id="loginWechat" data-page-node-id="OjTIWg5YcZ0tJ7Qc7eQazQ">💬 微信登录</button>
+                <button class="lm lm-alipay" id="loginAlipay" data-page-node-id="b6WptruDYMczOKPjyghs1y">🅰️ 支付宝登录</button>
+                <button class="lm lm-phone" id="loginPhoneBtn" data-page-node-id="frvjEelFzQ55UJE7gRsUZD">📱 手机验证码登录</button>
+            </div>
+            <div class="modal-actions" data-page-node-id="6SGh8w551wiwVELyO1K3gl">
+                <button class="btn-secondary" id="closeLoginBtn" data-page-node-id="sGHt3v6U23HLDWrm42a0de">暂不登录</button>
+            </div>
+            <p style="font-size:15px;color:#999;margin-top:12px;text-align:center;" data-page-node-id="ZnzdjAyyx8V4ifvl0B8Osj">演示环境：微信/支付宝为模拟授权，手机登录用演示验证码</p>
+        </div>
+        <div id="loginPhoneBox" style="display:none;" data-page-node-id="pudieEEWTcdulTGiHEcT0S">
+            <div class="field-group" data-page-node-id="bVePgwrZNsTqhXnDkx9JEH">
+                <label for="phoneInput" data-page-node-id="7XUTx8PQPi2AoBvK2j3Kf3">手机号</label>
+                <input type="text" id="phoneInput" maxlength="11" inputmode="numeric" placeholder="请输入11位手机号" data-page-node-id="mSCCx4fOd1Ry35ycTBswB4" />
+            </div>
+            <div class="field-group" data-page-node-id="fXQdyaHl2zlDQhiAC9HRpQ">
+                <label data-page-node-id="s4kPZYW24mxCAof6xBjiFz">短信验证码</label>
+                <div style="display:flex; gap:10px;" data-page-node-id="RESXAdJ7mEN2XvMZbFh5Cl">
+                    <input type="text" id="smsInput" maxlength="6" inputmode="numeric" placeholder="验证码" style="flex:1; padding:15px 16px; font-size:22px; border:2px solid #ccd7e6; border-radius:14px; outline:none;" data-page-node-id="IMIvYyhzHgpEIMYH3eWjRm" />
+                    <button class="btn-add-time" id="smsBtn" style="margin:0; white-space:nowrap;" data-page-node-id="RthBKCH23afsU0wLPWSNj8">获取验证码</button>
+                </div>
+            </div>
+            <div class="field-group" data-page-node-id="6zNAFJ1jBy59twhQMY1vxz">
+                <label for="nickInput" data-page-node-id="c7sCJMkGyTEQ9uckuHE88W">昵称（家人怎么称呼你）</label>
+                <input type="text" id="nickInput" placeholder="例如：小李" data-page-node-id="WQLrm00MK2kE9TX73xELCB" />
+            </div>
+            <div class="modal-actions" data-page-node-id="ewGGmI9QNzn1zSQRpDnRzk">
+                <button class="btn-primary" id="doPhoneLoginBtn" data-page-node-id="O64XUPCsaL9wC7jR1Zjmjl">登 录</button>
+                <button class="btn-secondary" id="backLoginBtn" data-page-node-id="9ORGm04WytcHP0DHAuJRgm">返回</button>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- ===== 拍照预览 ===== -->
-<div class="preview-overlay" id="previewOverlay">
-    <div class="preview-top">
-        <span class="preview-title">📸 确认照片</span>
-        <button class="preview-close" id="previewCloseBtn">✕</button>
+<div class="preview-overlay" id="previewOverlay" data-page-node-id="E9nAvTTSLmxOT5MvS4FYEW">
+    <div class="preview-top" data-page-node-id="NkdLGPkD23XOArsR1ibrGV">
+        <span class="preview-title" data-page-node-id="jzXSY0Hgy9zCMPsYpHP5Jm">📸 确认照片</span>
+        <button class="preview-close" id="previewCloseBtn" data-page-node-id="lCpGZ15Ul8AkcPeYY77GzS">✕</button>
     </div>
-    <div class="preview-img-wrap">
-        <img id="previewImg" alt="药盒照片" />
+    <div class="preview-img-wrap" data-page-node-id="AaXOvlVkYbP9zEDdCLTqFa">
+        <img id="previewImg" alt="药盒照片" data-page-node-id="SNLLlAwZKNYnSn09Hg4dQy" />
     </div>
-    <div class="preview-footer">
-        <button class="btn-retake" id="retakeBtn">🔁 重新拍摄</button>
-        <button class="btn-confirm" id="confirmPhotoBtn">🔍 上传识别</button>
+    <div class="preview-footer" data-page-node-id="xX8iTWOkPgWLH114piDFE0">
+        <button class="btn-retake" id="retakeBtn" data-page-node-id="0tMsAjIYWzEMlGpApcxuSE">🔁 重新拍摄</button>
+        <button class="btn-confirm" id="confirmPhotoBtn" data-page-node-id="hUzA38tesNKBPd1KXSA1eV">🔍 上传识别</button>
     </div>
 </div>
 
 <!-- ===== Loading 指示器 ===== -->
-<div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-box">
-        <div class="spinner"></div>
-        <p id="loadingText">正在识别...</p>
-        <p class="loading-sub" id="loadingSub">AI 正在分析药盒文字，请稍候</p>
+<div class="loading-overlay" id="loadingOverlay" data-page-node-id="hztKD1YUKZkIsqGIKqGvwl">
+    <div class="loading-box" data-page-node-id="V01iifm3poi4FSUQPBZbro">
+        <div class="spinner" data-page-node-id="aVu0t9ir1BydcduwCQBWOi"></div>
+        <p id="loadingText" data-page-node-id="74qujpVQIVInTC2A6R7njH">正在识别...</p>
+        <p class="loading-sub" id="loadingSub" data-page-node-id="B0mtg8o7W4JDrmsn1eaUnb">AI 正在分析药盒文字，请稍候</p>
     </div>
 </div>
 
 <!-- ===== Toast 通知 ===== -->
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" data-page-node-id="ITNBMe2hVd8z3g1YlNLNlH"></div>
 
 <!-- ===== 隐藏的文件选择输入：相机 / 相册 ===== -->
-<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;" />
-<input type="file" id="galleryFileInput" accept="image/*" style="display:none;" />
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;" data-page-node-id="jHXvgLfp6waVSUHo0KTjjL" />
+<input type="file" id="galleryFileInput" accept="image/*" style="display:none;" data-page-node-id="ak6C19biRVOtCmS1Mh9tQJ" />
 
 <script>
     // ================================================================
@@ -1565,12 +1820,16 @@
                         + '<div style="margin-top:8px;">' + escapeHtml(shortText) + '</div></details>';
             }
 
+            // 药品分类与适龄提示卡片
+            var clsHtml = result.classification ? renderClassification(result.classification) : '';
+
             var html = ''
                 + photoHtml
                 + '<div class="result-icon">' + result.icon + '</div>'
                 + '<div class="result-title">' + result.title + '</div>'
                 + '<div class="result-desc">' + result.desc + '</div>'
                 + '<div class="result-detail">' + result.detail + '</div>'
+                + clsHtml
                 + ocrHtml;
 
             resultArea.innerHTML = html;
@@ -1650,13 +1909,14 @@
             plans.forEach(function(p) {
                 var item = document.createElement('div');
                 item.className = 'plan-item';
+                var member = getMemberById(p.memberId);
                 var name = escapeHtml(p.name);
                 var dose = p.dose ? '，每次 ' + escapeHtml(p.dose) : '';
                 var timesHtml = p.times.map(function(t) { return '<span>' + t + '</span>'; }).join('、') || '未设置';
                 item.innerHTML =
-                    '<div class="plan-icon">💊</div>' +
+                    '<div class="plan-icon">' + (member ? member.avatar : '💊') + '</div>' +
                     '<div class="plan-info">' +
-                        '<div class="plan-name">' + name + '</div>' +
+                        '<div class="plan-name">' + (member && member.id !== 'self' ? member.name + ' · ' : '') + name + '</div>' +
                         '<div class="plan-meta">' +
                             '服用时间：' + timesHtml + dose +
                         '</div>' +
@@ -1692,12 +1952,25 @@
             }
             // 去重 + 排序
             times = times.filter(function(v, i, a) { return a.indexOf(v) === i; }).sort();
+            // 归属成员 + 年龄用药安全检查
+            var memberId = medMemberSel.value || 'self';
+            var member = getMemberById(memberId);
+            var ageWarns = ageWarningsFor(member.ageGroup, name);
+            var redWarns = ageWarns.filter(function(w) { return w.level === 'red'; });
+            if (redWarns.length > 0) {
+                var msg = '⚠️ 「' + member.name + '」（' + AGE_LABELS[member.ageGroup] + '）用药风险提示：\n\n';
+                redWarns.forEach(function(w) { msg += '· ' + w.text + '\n'; });
+                msg += '\n仍要保存这个吃药计划吗？';
+                if (!confirm(msg)) return;
+            }
             plans.push({
                 id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
                 name: name,
                 dose: medDose.value.trim(),
-                times: times
+                times: times,
+                memberId: memberId
             });
+            ensureFeed('📋 已为「' + member.name + '」添加吃药计划：' + name + '（' + times.join('、') + '）');
             savePlans();
             renderPlans();
             updateReminderStatus();
@@ -1745,9 +2018,14 @@
         // --- 触发服药弹窗 + 系统通知 + 语音 ---
         function fireReminder(plan, time) {
             currentRemindAction = { id: plan.id, time: time };
-            pillAlertName.textContent = plan.name;
+            var member = getMemberById(plan.memberId);
+            pillAlertName.textContent = (member && member.id !== 'self' ? member.name + ' · ' : '') + plan.name;
             pillAlertDose.textContent = plan.dose ? ('每次剂量：' + plan.dose) : '到时间啦，请按时服用';
             pillAlert.classList.add('show');
+            // 家人相互提醒：记录到共享动态，家人可看到"已提醒TA吃药"
+            if (member && member.id !== 'self') {
+                ensureFeed('⏰ 已提醒「' + member.name + '」按时服用 ' + plan.name + '，家人请留意');
+            }
 
             // 浏览器系统通知
             try {
@@ -1788,21 +2066,34 @@
 
         // --- Tab 切换 ---
         function switchTab(tab) {
+            tabKeep = (tab === 'remind');
+            tabCheck.classList.remove('active');
+            tabRemind.classList.remove('active');
+            tabFamily.classList.remove('active');
+            panelCheck.classList.remove('active');
+            panelRemind.classList.remove('active');
+            panelFamily.classList.remove('active');
             if (tab === 'remind') {
-                tabKeep = true;
-                tabCheck.classList.remove('active');
                 tabRemind.classList.add('active');
-                panelCheck.classList.remove('active');
                 panelRemind.classList.add('active');
                 renderPlans();
                 updateReminderStatus();
+                refreshMemberSelects();
                 // 首次进入时申请通知权限
                 requestNotifyPermission();
+            } else if (tab === 'family') {
+                tabFamily.classList.add('active');
+                panelFamily.classList.add('active');
+                renderFamList();
+                renderFeed();
+                updateFamilyStatus();
+                refreshMemberSelects();
+                if (!currentUser) {
+                    showToast('登录后即可与家人共享数据', 'success');
+                    openLoginModal();
+                }
             } else {
-                tabKeep = false;
-                tabRemind.classList.remove('active');
                 tabCheck.classList.add('active');
-                panelRemind.classList.remove('active');
                 panelCheck.classList.add('active');
             }
         }
@@ -1815,6 +2106,9 @@
         function handleCheck() {
             var rawText = inputEl.value;
             var result = analyzeDrugCode(rawText);
+            // 药品分类 + 适龄用药提示
+            var cls = buildClassification(rawText, checkAgeSel.value);
+            if (cls) result.classification = cls;
             renderResult(result, null, null);
         }
 
@@ -1839,6 +2133,9 @@
 
                 // 分析结果
                 var analysis = analyzeOCRResult(ocrResult);
+                // 药品分类 + 适龄用药提示（基于 AI 识别出的全文）
+                var cls = buildClassification(ocrResult, checkAgeSel.value);
+                if (cls) analysis.classification = cls;
 
                 // 渲染
                 renderResult(analysis, dataUrl, ocrResult);
@@ -2138,11 +2435,429 @@
             };
         }
 
+        // ---------- 新增模块 DOM 引用 ----------
+        var headerSub       = document.getElementById('headerSub');
+        var loginIcon       = document.getElementById('loginIcon');
+        var loginModal      = document.getElementById('loginModal');
+        var loginHome       = document.getElementById('loginHome');
+        var loginPhoneBox   = document.getElementById('loginPhoneBox');
+        var loginWechat     = document.getElementById('loginWechat');
+        var loginAlipay     = document.getElementById('loginAlipay');
+        var loginPhoneBtn   = document.getElementById('loginPhoneBtn');
+        var phoneInput      = document.getElementById('phoneInput');
+        var smsInput        = document.getElementById('smsInput');
+        var smsBtn          = document.getElementById('smsBtn');
+        var nickInput       = document.getElementById('nickInput');
+        var doPhoneLoginBtn = document.getElementById('doPhoneLoginBtn');
+        var backLoginBtn    = document.getElementById('backLoginBtn');
+        var closeLoginBtn   = document.getElementById('closeLoginBtn');
+
+        var tabFamily       = document.getElementById('tabFamily');
+        var panelFamily     = document.getElementById('panelFamily');
+        var familyShareStatus = document.getElementById('familyShareStatus');
+        var famNameInput    = document.getElementById('famName');
+        var famRelationSel  = document.getElementById('famRelation');
+        var famAgeSel       = document.getElementById('famAge');
+        var addFamBtn       = document.getElementById('addFamBtn');
+        var famList         = document.getElementById('famList');
+        var feedList        = document.getElementById('feedList');
+
+        var checkAgeSel     = document.getElementById('checkAge');
+        var medMemberSel    = document.getElementById('medMember');
+
+        // =============================================================
+        //  【新增模块一】登录系统 —— 微信 / 支付宝 / 手机验证码
+        //  （演示环境：纯前端模拟，数据存 localStorage）
+        // =============================================================
+        var USER_KEY = 'yaq_user_v1';
+        var currentUser = loadUser();
+
+        function loadUser() {
+            try { return JSON.parse(localStorage.getItem(USER_KEY)) || null; } catch (e) { return null; }
+        }
+        function saveUser() {
+            try { localStorage.setItem(USER_KEY, JSON.stringify(currentUser)); } catch (e) {}
+        }
+
+        function openLoginModal() {
+            loginModal.classList.add('show');
+            loginHome.style.display = 'block';
+            loginPhoneBox.style.display = 'none';
+        }
+        function closeLoginModal() {
+            loginModal.classList.remove('show');
+        }
+
+        function doLogin(user) {
+            currentUser = user;
+            saveUser();
+            applyUserUI();
+            closeLoginModal();
+            refreshMemberSelects();
+            showToast('✅ 欢迎回来，' + user.name, 'success');
+            ensureFeed('👋 ' + user.name + ' 登录了药安全');
+        }
+
+        function applyUserUI() {
+            if (currentUser) {
+                loginIcon.textContent = currentUser.avatar;
+                loginIcon.title = currentUser.name + '（点击退出）';
+                headerSub.textContent = '你好，' + currentUser.name + ' · ' + currentUser.methodLabel;
+            } else {
+                loginIcon.textContent = '👤';
+                loginIcon.title = '登录 / 注册';
+                headerSub.textContent = '鉴别真伪 · 按时吃药';
+            }
+            updateFamilyStatus();
+        }
+
+        // --- 登录事件绑定 ---
+        loginIcon.addEventListener('click', function() {
+            if (currentUser) {
+                if (confirm('退出登录「' + currentUser.name + '」吗？\n（本地数据不会删除）')) {
+                    currentUser = null;
+                    saveUser();
+                    applyUserUI();
+                    refreshMemberSelects();
+                    showToast('已退出登录', 'success');
+                }
+            } else {
+                openLoginModal();
+            }
+        });
+        closeLoginBtn.addEventListener('click', closeLoginModal);
+        loginModal.addEventListener('click', function(e) {
+            if (e.target === loginModal) closeLoginModal();
+        });
+
+        loginWechat.addEventListener('click', function() {
+            var nick = prompt('演示环境：模拟微信授权登录。\n请输入昵称（家人怎么称呼你）：', '微信用户');
+            if (nick === null) return;
+            doLogin({ name: nick.trim() || '微信用户', avatar: '💬', methodLabel: '微信登录' });
+        });
+
+        loginAlipay.addEventListener('click', function() {
+            var nick = prompt('演示环境：模拟支付宝授权登录。\n请输入昵称（家人怎么称呼你）：', '支付宝用户');
+            if (nick === null) return;
+            doLogin({ name: nick.trim() || '支付宝用户', avatar: '🅰️', methodLabel: '支付宝登录' });
+        });
+
+        loginPhoneBtn.addEventListener('click', function() {
+            loginHome.style.display = 'none';
+            loginPhoneBox.style.display = 'block';
+        });
+        backLoginBtn.addEventListener('click', function() {
+            loginPhoneBox.style.display = 'none';
+            loginHome.style.display = 'block';
+        });
+
+        var smsDemoCode = null;
+        var smsCountdownTimer = null;
+        smsBtn.addEventListener('click', function() {
+            var phone = phoneInput.value.trim();
+            if (!/^1\d{10}$/.test(phone)) {
+                showToast('请输入正确的11位手机号', 'error');
+                return;
+            }
+            smsDemoCode = String(Math.floor(1000 + Math.random() * 9000));
+            showToast('📱 演示验证码：' + smsDemoCode + '（正式版将短信下发）', 'success', 8000);
+            var left = 60;
+            smsBtn.disabled = true;
+            smsBtn.textContent = left + 's 后重发';
+            if (smsCountdownTimer) clearInterval(smsCountdownTimer);
+            smsCountdownTimer = setInterval(function() {
+                left--;
+                if (left <= 0) {
+                    clearInterval(smsCountdownTimer);
+                    smsBtn.disabled = false;
+                    smsBtn.textContent = '获取验证码';
+                } else {
+                    smsBtn.textContent = left + 's 后重发';
+                }
+            }, 1000);
+        });
+
+        doPhoneLoginBtn.addEventListener('click', function() {
+            var phone = phoneInput.value.trim();
+            if (!/^1\d{10}$/.test(phone)) {
+                showToast('请输入正确的11位手机号', 'error');
+                return;
+            }
+            if (!smsDemoCode || smsInput.value.trim() !== smsDemoCode) {
+                showToast('验证码不正确，请重新输入', 'error');
+                return;
+            }
+            var nick = nickInput.value.trim() || ('用户' + phone.slice(-4));
+            doLogin({ name: nick, avatar: '📱', methodLabel: '手机号登录', phone: phone });
+        });
+
+        // =============================================================
+        //  【新增模块二】家人共享 —— 添加家人 / 共享计划 / 相互提醒 / 相互关怀
+        //  （演示环境：同一设备 localStorage 共享，正式版可接入云端同步）
+        // =============================================================
+        var FAMILY_KEY = 'yaq_family_v1';
+        var FEED_KEY = 'yaq_feed_v1';
+        var MAX_FAMILY = 5;
+        var AGE_LABELS = { child: '儿童(0-12岁)', teen: '青少年(13-17岁)', adult: '成人(18-59岁)', senior: '老年人(60岁+)' };
+        var AGE_AVATARS = { child: '👶', teen: '🧑', adult: '🧑‍💼', senior: '👴' };
+
+        var family = loadFamily();
+        var feed = loadFeed();
+
+        function loadFamily() {
+            try { return JSON.parse(localStorage.getItem(FAMILY_KEY)) || []; } catch (e) { return []; }
+        }
+        function saveFamily() {
+            try { localStorage.setItem(FAMILY_KEY, JSON.stringify(family)); } catch (e) {}
+        }
+        function loadFeed() {
+            try { return JSON.parse(localStorage.getItem(FEED_KEY)) || []; } catch (e) { return []; }
+        }
+        function saveFeed() {
+            try { localStorage.setItem(FEED_KEY, JSON.stringify(feed)); } catch (e) {}
+        }
+        function ensureFeed(text) {
+            feed.unshift({ t: Date.now(), text: text });
+            feed = feed.slice(0, 30);
+            saveFeed();
+            renderFeed();
+        }
+
+        function getMemberById(id) {
+            if (!id || id === 'self') {
+                return { id: 'self', name: currentUser ? currentUser.name : '我', avatar: currentUser ? currentUser.avatar : '🙋', ageGroup: 'adult' };
+            }
+            return family.find(function(f) { return f.id === id; }) || null;
+        }
+
+        function updateFamilyStatus() {
+            if (!currentUser) {
+                familyShareStatus.className = 'reminder-disabled';
+                familyShareStatus.textContent = '🔐 尚未登录，登录后即可与家人共享数据（演示为同一设备共享）';
+                return;
+            }
+            familyShareStatus.className = 'reminder-enabled';
+            familyShareStatus.textContent = '🤝 ' + currentUser.name + ' 已登录 · 家庭组 ' + (family.length + 1) + ' 人，吃药计划与动态互相可见';
+        }
+
+        function refreshMemberSelects() {
+            var cur = medMemberSel.value;
+            medMemberSel.innerHTML = '';
+            var optSelf = document.createElement('option');
+            optSelf.value = 'self';
+            optSelf.textContent = (currentUser ? currentUser.avatar + ' ' + currentUser.name : '🙋 我自己');
+            medMemberSel.appendChild(optSelf);
+            family.forEach(function(f) {
+                var o = document.createElement('option');
+                o.value = f.id;
+                o.textContent = f.avatar + ' ' + f.name + '（' + f.relation + '）';
+                medMemberSel.appendChild(o);
+            });
+            if (cur) medMemberSel.value = cur;
+        }
+
+        function renderFamList() {
+            if (family.length === 0) {
+                famList.innerHTML = '<div class="plan-empty">还没有添加家人，添加后可共享提醒与动态 👆</div>';
+                return;
+            }
+            famList.innerHTML = '';
+            family.forEach(function(f) {
+                var count = plans.filter(function(p) { return p.memberId === f.id; }).length;
+                var card = document.createElement('div');
+                card.className = 'member-card';
+                card.innerHTML =
+                    '<div class="m-avatar">' + f.avatar + '</div>' +
+                    '<div class="m-info">' +
+                        '<div class="m-name">' + escapeHtml(f.name) + '</div>' +
+                        '<div class="m-meta">' + escapeHtml(f.relation) + ' · ' + AGE_LABELS[f.ageGroup] + ' · ' + count + ' 个吃药计划</div>' +
+                    '</div>' +
+                    '<button class="m-care">❤️ 关怀</button>' +
+                    '<button class="m-del" title="移除">🗑</button>';
+                card.querySelector('.m-care').addEventListener('click', function() {
+                    ensureFeed('❤️ 你给「' + f.name + '」送上了一份关怀，记得提醒TA按时吃药');
+                    showToast('❤️ 已把关怀送给 ' + f.name, 'success');
+                });
+                card.querySelector('.m-del').addEventListener('click', function() {
+                    if (confirm('确定移除家人「' + f.name + '」吗？')) {
+                        family = family.filter(function(x) { return x.id !== f.id; });
+                        saveFamily();
+                        renderFamList();
+                        refreshMemberSelects();
+                        updateFamilyStatus();
+                        renderPlans();
+                        ensureFeed('👋 「' + f.name + '」已退出家庭共享');
+                    }
+                });
+                famList.appendChild(card);
+            });
+        }
+
+        function renderFeed() {
+            if (!feed.length) {
+                feedList.innerHTML = '<div class="plan-empty">暂无动态，添加家人或到点吃药后这里会有记录</div>';
+                return;
+            }
+            feedList.innerHTML = '';
+            feed.slice(0, 15).forEach(function(it) {
+                var d = new Date(it.t);
+                var div = document.createElement('div');
+                div.className = 'feed-item';
+                div.innerHTML = escapeHtml(it.text) +
+                    '<span class="feed-time">' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + '</span>';
+                feedList.appendChild(div);
+            });
+        }
+
+        // --- 添加家人事件 ---
+        addFamBtn.addEventListener('click', function() {
+            if (!currentUser) {
+                showToast('请先登录，再添加家人', 'error');
+                openLoginModal();
+                return;
+            }
+            if (family.length >= MAX_FAMILY) {
+                showToast('最多添加 ' + MAX_FAMILY + ' 位家人', 'error');
+                return;
+            }
+            var name = famNameInput.value.trim();
+            if (!name) {
+                showToast('请输入家人称呼', 'error');
+                famNameInput.focus();
+                return;
+            }
+            var ageGroup = famAgeSel.value;
+            var m = {
+                id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+                name: name,
+                relation: famRelationSel.value,
+                ageGroup: ageGroup,
+                avatar: AGE_AVATARS[ageGroup] || '🧑'
+            };
+            family.push(m);
+            saveFamily();
+            famNameInput.value = '';
+            renderFamList();
+            refreshMemberSelects();
+            updateFamilyStatus();
+            ensureFeed('👪 「' + name + '」（' + m.relation + '）加入了家庭共享');
+            showToast('✅ 已添加家人「' + name + '」', 'success');
+        });
+
+        // =============================================================
+        //  【新增模块三】药品分类知识库 + 适龄用药提示
+        //  依据公开权威资料整理：人民网《十类常用药儿童禁忌多》、
+        //  央视网《解热镇痛药在儿童发热对症治疗中的合理用药专家共识》报道、
+        //  中国医药信息查询平台（激素类/感冒药用药注意事项）
+        //  仅供提示参考，具体用药请遵医嘱
+        // =============================================================
+        var DRUG_CATEGORIES = [
+            { id: 'food', name: '普通食品', icon: '🍚', color: 'green',
+              match: /SC\d{14}|食品生产许可证/,
+              tips: ['食品不具备任何治疗、预防疾病的功能', '凡宣传"治病/降三高/根治"的食品均涉嫌违法'] },
+            { id: 'supplement', name: '保健食品', icon: '🟡', color: 'orange',
+              match: /国食健字|食健备|保健食品|膳食补充/,
+              tips: ['保健食品不是药品，不能替代药物治疗疾病', '认准"蓝帽子"标识，警惕夸大宣传'] },
+            { id: 'child', name: '儿童用药', icon: '🧒', color: 'blue',
+              match: /小儿|儿童|婴幼儿|氨酚黄那敏|美林|泰诺林/,
+              tips: ['必须按儿童体重或年龄计算剂量，不可把成人药掰半替代', '儿童退热首选对乙酰氨基酚或布洛芬，对乙酰氨基酚每日不超过2克'] },
+            { id: 'cold', name: '感冒用药', icon: '🤧', color: 'orange',
+              match: /感冒|氨酚|对乙酰氨基酚|氯苯那敏|扑尔敏|伪麻黄碱|右美沙芬|烷胺|金刚烷胺/,
+              tips: ['不同复方感冒药不可叠加同服，同含对乙酰氨基酚易致肝损伤', '含氯苯那敏成分易嗜睡，服药后避免开车、高空作业', '对乙酰氨基酚每日总量不超过2克，过量可致肝衰竭'] },
+            { id: 'hormone', name: '激素类', icon: '⚗️', color: 'red',
+              match: /泼尼松|强的松|地塞米松|甲泼尼龙|氢化可的松|氟轻松|倍他米松|曲安奈德|莫米松|布地奈德|甲巯咪唑|左甲状腺素|优甲乐|胰岛素|可的松/,
+              tips: ['激素类药物严禁突然停药，必须遵医嘱逐渐减量，否则可致病情反跳', '糖皮质激素建议早晨一次服用，可减少副作用', '长期使用需监测血糖、血压、骨密度和眼部情况'] },
+            { id: 'cardio', name: '心血管类', icon: '❤️', color: 'red',
+              match: /硝苯地平|氨氯地平|美托洛尔|卡托普利|厄贝沙坦|缬沙坦|他汀|阿托伐|辛伐|瑞舒伐|氯吡格雷|硝酸甘油|降压|地高辛/,
+              tips: ['阿司匹林肠溶片应整片吞服，不可掰碎嚼服', '他汀类一般建议晚间服用', '降压药不可随意停药或自行加减量'] },
+            { id: 'diabetes', name: '降糖类', icon: '🩸', color: 'orange',
+              match: /二甲双胍|格列|胰岛素|阿卡波糖|拜糖平|达格列净|西格列汀|瑞格列奈|降糖/,
+              tips: ['注意规律进餐与服药配合，防范低血糖', '二甲双胍常见胃肠反应，随餐服用可减轻'] },
+            { id: 'antibiotic', name: '抗生素类', icon: '🦠', color: 'orange',
+              match: /头孢|阿莫西林|青霉素|阿奇霉素|克拉霉素|罗红霉素|左氧氟沙星|诺氟沙星|环丙沙星|氧氟沙星|莫西沙星|庆大霉素|链霉素|阿米卡星|甲硝唑|磺胺|四环素|多西环素|米诺环素|氯霉素/,
+              tips: ['头孢类、甲硝唑服药期间及停药后7天内严禁饮酒（双硫仑样反应）', '抗生素须按疗程服完，症状好转就停易复发并产生耐药', '喹诺酮类（XX沙星）18岁以下禁用；庆大霉素等氨基糖苷类6岁以下禁用'] },
+            { id: 'digest', name: '消化类', icon: '🍽️', color: 'blue',
+              match: /奥美拉唑|雷贝拉唑|泮托拉唑|铝碳酸镁|达喜|多潘立酮|吗丁啉|莫沙必利|蒙脱石|健胃|益生菌/,
+              tips: ['奥美拉唑不宜长期自行服用，需遵医嘱', '胃动力药（吗丁啉等）一般餐前15-30分钟服用'] },
+            { id: 'vitamin', name: '维生素/营养类', icon: '🍊', color: 'green',
+              match: /维生素|维C|维A|维D|钙片|鱼肝油|葡萄糖酸锌|蛋白粉|氨基酸|叶酸|鱼油/,
+              tips: ['维生素不是越多越好，过量同样有害', '营养补充剂不能替代药品治疗疾病'] }
+        ];
+
+        // 儿童用药红线清单
+        var CHILD_DRUG_BANS = [
+            { re: /沙星$/, note: '氟喹诺酮类（XX沙星）18岁以下禁用，可影响骨骼发育' },
+            { re: /阿司匹林|赖氨匹林/, note: '儿童禁用阿司匹林，可引发瑞氏综合征' },
+            { re: /尼美舒利/, note: '尼美舒利12岁以下儿童禁用，可致肝损害' },
+            { re: /安乃近/, note: '安乃近片剂18岁以下禁用' },
+            { re: /四环素|多西环素|米诺环素/, note: '四环素类8岁以下禁用，可致牙齿黄染、骨骼发育抑制' },
+            { re: /庆大霉素|链霉素|阿米卡星|妥布霉素/, note: '氨基糖苷类6岁以下禁用，有耳毒性、肾毒性，可致不可逆耳聋' },
+            { re: /氯霉素/, note: '新生儿禁用氯霉素（灰婴综合征），儿童慎用' },
+            { re: /复方地芬诺酯|洛哌丁胺/, note: '2岁以下儿童禁用，可致中枢抑制' },
+            { re: /异丙嗪|非那根/, note: '异丙嗪2岁以下禁用，可致呼吸抑制' }
+        ];
+
+        function classifyText(text) {
+            var t = text || '';
+            for (var i = 0; i < DRUG_CATEGORIES.length; i++) {
+                if (DRUG_CATEGORIES[i].match.test(t)) return DRUG_CATEGORIES[i];
+            }
+            return null;
+        }
+
+        function ageWarningsFor(ageGroup, text) {
+            var t = text || '';
+            var out = [];
+            if (ageGroup === 'child') {
+                CHILD_DRUG_BANS.forEach(function(b) {
+                    if (b.re.test(t)) out.push({ level: 'red', text: b.note });
+                });
+                // 独立关键词检查（不受分类先匹配影响）
+                if (/感冒|氨酚|烷胺|金刚烷胺/.test(t)) out.push({ level: 'yellow', text: '儿童慎用复方感冒药，4岁以下不建议自行使用非处方止咳药' });
+                if (/泼尼松|强的松|地塞米松|甲泼尼龙|氢化可的松|可的松|布地奈德|氟轻松/.test(t)) out.push({ level: 'yellow', text: '儿童长期使用激素会影响生长发育，务必遵医嘱并记录身高体重' });
+            } else if (ageGroup === 'teen') {
+                if (/沙星/.test(t)) out.push({ level: 'red', text: '氟喹诺酮类（XX沙星）18岁以下禁用' });
+            } else if (ageGroup === 'senior') {
+                if (/泼尼松|强的松|地塞米松|甲泼尼龙|氢化可的松|可的松|布地奈德/.test(t)) out.push({ level: 'yellow', text: '老年人用糖皮质激素易诱发高血压、糖尿病和骨质疏松，需加强监测' });
+                if (/硝苯地平|氨氯地平|美托洛尔|卡托普利|沙坦|他汀|阿托伐|辛伐|瑞舒伐|氯吡格雷|硝酸甘油|地高辛|降压/.test(t)) out.push({ level: 'yellow', text: '老年人肝肾功能下降，心血管药物应从小剂量开始、定期复诊' });
+                if (/头孢|阿莫西林|青霉素|霉素|沙星|磺胺|甲硝唑/.test(t)) out.push({ level: 'yellow', text: '老年人肾功能下降，抗生素剂量与疗程须由医生评估' });
+            }
+            return out;
+        }
+
+        function buildClassification(text, ageGroup) {
+            var cat = classifyText(text);
+            var warns = ageWarningsFor(ageGroup, text);
+            if (!cat && warns.length === 0) return null;
+            return { cat: cat, warns: warns, ageGroup: ageGroup };
+        }
+
+        function renderClassification(cls) {
+            var html = '<div class="classify-card"><h4>🏷️ 药品分类与适龄提示</h4>';
+            if (cls.cat) {
+                html += '<span class="cat-chip cat-' + cls.cat.color + '">' + cls.cat.icon + ' ' + cls.cat.name + '</span>';
+            }
+            if (cls.ageGroup && cls.ageGroup !== 'adult') {
+                html += '<span class="cat-chip cat-blue">👤 ' + AGE_LABELS[cls.ageGroup] + '</span>';
+            }
+            cls.warns.forEach(function(w) {
+                html += '<div class="age-warn' + (w.level === 'yellow' ? ' yellow' : '') + '">⚠️ ' + escapeHtml(w.text) + '</div>';
+            });
+            if (cls.cat && cls.cat.tips && cls.cat.tips.length) {
+                html += '<ul class="cat-tips">';
+                cls.cat.tips.forEach(function(tp) { html += '<li>' + escapeHtml(tp) + '</li>'; });
+                html += '</ul>';
+            }
+            html += '</div>';
+            return html;
+        }
+
         // =============================================================
         //  服药提醒：事件绑定与初始化
         // =============================================================
         tabCheck.addEventListener('click', function() { switchTab('check'); });
         tabRemind.addEventListener('click', function() { switchTab('remind'); });
+        tabFamily.addEventListener('click', function() { switchTab('family'); });
 
         addTimeBtn.addEventListener('click', function() {
             addTimeInput('');
@@ -2181,6 +2896,11 @@
         addTimeInput(nowPlusOneHour());
         renderPlans();
         updateReminderStatus();
+        refreshMemberSelects();
+        renderFamList();
+        renderFeed();
+        applyUserUI();
+        updateFamilyStatus();
 
         // 每 15 秒检测一次是否到点（跨过整分钟边界也能及时提醒）
         if (remindTimer) clearInterval(remindTimer);
