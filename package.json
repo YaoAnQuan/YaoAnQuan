@@ -1,0 +1,23 @@
+{
+  "name": "yaoanquan",
+  "version": "1.0.0",
+  "description": "一个面向全家的移动端药品查询工具:支持多种方式登录、批准文号查验、拍照 AI 识别药盒、按年龄段的药品分类提示、语音朗读结果、服药提醒和家人共享(添加家人、共享数据、吃药相互提醒、相互关怀)。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YaoAnQuan/YaoAnQuan.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YaoAnQuan/YaoAnQuan/issues"
+  },
+  "homepage": "https://github.com/YaoAnQuan/YaoAnQuan#readme",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}

@@ -65,13 +65,50 @@
 - 拍照前预览确认,支持重新拍摄
 - 自动处理手机照片 EXIF 旋转方向,压缩至 1280px 再上传
 
+## 数据分析（Vercel Web Analytics）
+
+用于统计真实用户使用情况（访客量 + 关键功能使用行为）。实现方式为纯前端轻量埋点，不引入任何第三方统计服务。
+
+### 接入方式
+
+- 页面顶部（主应用脚本之前）加载官方脚本：
+  ```html
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  ```
+  使用 Vercel 官方路径（非 CDN），`defer` 异步加载，不阻塞渲染。
+- 应用内定义 `track(eventName, props)`：优先走 `window.va('event', { name, data })`，全程 `try/catch` 包裹；本地打开页面时 `/_vercel/insights/script.js` 不存在，`window.va` 保持为数组队列函数，埋点静默失败且不影响业务。
+
+### 埋点事件清单
+
+| 事件名 | 触发时机 | 属性 |
+| --- | --- | --- |
+| `check_code` | 手动查验完成（点击「查验」按钮或输入框回车后，结果已渲染） | `code_type: 'manual'` |
+| `check_code` | 拍照识别成功（AI 返回并渲染结果后） | `code_type: 'photo'`、`result: green/yellow/red/none` |
+| `check_code` | 拍照识别失败（流程抛错并提示后） | `code_type: 'photo'`、`result: 'error'` |
+| `save_plan` | 吃药计划保存成功、列表刷新后 | `times_count`、`has_member` |
+| `delete_plan` | 用户确认删除且计划已移除后 | — |
+| `speak_result` | 点击「🔊 朗读结果」并开始播报后（自动朗读不计入） | — |
+| `add_family` | 家人添加成功、列表刷新后 | `age_group: child/teen/adult/senior` |
+| `login` | 登录成功（微信 / 支付宝 / 手机验证码三条路径） | `method: '微信登录'/'支付宝登录'/'手机号登录'` |
+
+> 埋点统一放在功能成功执行之后，失败或无权限的分支不产生事件。
+
+### 上线前须知
+
+1. 在 Vercel 控制台 **Analytics 面板点击 Enable** 开启 Web Analytics（开启后需重新部署才会生成 `/_vercel/insights/*` 路由）。
+2. **自定义事件需要 Pro / Enterprise 计划**：Hobby 计划仅统计页面访问量（PV/UV），Events 面板不会出现上述事件；Pro 计划每个事件最多保留 **2 个属性**（本项目的埋点均为 1–2 个属性，已适配），Pro + Web Analytics Plus / Enterprise 可保留 8 个。
+3. 数据查看路径：Vercel 控制台 → 选择项目 → Analytics（Events 面板按事件名筛选，可下钻查看属性分布）。
+
 ## 技术架构
 
 ```
 浏览器 (index.html)
-   │  POST /api/chat
-   ▼
-Vercel Serverless Function (api/chat.js)
+   │  POST /api/chat              │  GET /_vercel/insights/script.js
+   ▼                              ▼
+Vercel Serverless Function      Vercel Web Analytics
    │  HTTPS 转发 (Bearer API_KEY)
    ▼
 DMXAPI (www.dmxapi.cn /v1/chat/completions, gpt-4o)
@@ -81,12 +118,14 @@ DMXAPI (www.dmxapi.cn /v1/chat/completions, gpt-4o)
 - **后端**:`api/chat.js` Vercel Serverless 函数,统一代理 DMXAPI 请求
 - **安全**:API Key 仅保存在 Vercel 服务端环境变量中,不出现在浏览器或网络请求里
 - **AI 能力**:DMXAPI `gpt-4o` 视觉模型识别药盒文字(JSON 输出),规则引擎本地二次分析
+- **数据分析**:Vercel Web Analytics(页面访问 + 8 个自定义事件),依赖 `@vercel/analytics`
 
 ## 目录结构
 
 ```
 YaoAnQuan/
-├── index.html      # 前端单页应用(查药 + 拍照识别 + 服药提醒)
+├── index.html      # 前端单页应用(查药 + 拍照识别 + 服药提醒 + 家人共享 + 埋点)
+├── package.json    # 依赖声明(@vercel/analytics)
 └── api/
     └── chat.js     # Vercel Serverless 函数,代理 DMXAPI 聊天接口
 ```
